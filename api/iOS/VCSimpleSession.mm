@@ -41,7 +41,7 @@
 #   ifdef TARGET_OS_IPHONE
 #       include <videocore/sources/iOS/CameraSource.h>
 #       include <videocore/sources/iOS/MicSource.h>
-#       include <videocore/mixers/iOS/GLESVideoMixer.h>
+#       include <videocore/mixers/iOS/CIVideoMixer.h>
 #       include <videocore/transforms/iOS/AACEncode.h>
 #       include <videocore/transforms/iOS/H264Encode.h>
 
@@ -92,15 +92,19 @@ namespace videocore { namespace simpleApi {
 
     std::shared_ptr<videocore::simpleApi::PixelBufferOutput> m_pbOutput;
     std::shared_ptr<videocore::iOS::MicSource>               m_micSource;
+    std::shared_ptr<videocore::iOS::MicSource>               m_auxMicSource;
     std::shared_ptr<videocore::iOS::CameraSource>            m_cameraSource;
+    std::shared_ptr<videocore::iOS::CameraSource>            m_auxCameraSource;
     std::shared_ptr<videocore::Apple::PixelBufferSource>     m_pixelBufferSource;
     std::shared_ptr<videocore::AspectTransform>              m_pbAspect;
     std::shared_ptr<videocore::PositionTransform>            m_pbPosition;
     
     std::shared_ptr<videocore::Split> m_videoSplit;
     std::shared_ptr<videocore::AspectTransform>   m_aspectTransform;
+    std::shared_ptr<videocore::AspectTransform>   m_auxAspectTransform;
     videocore::AspectTransform::AspectMode m_aspectMode;
     std::shared_ptr<videocore::PositionTransform> m_positionTransform;
+    std::shared_ptr<videocore::PositionTransform> m_auxPositionTransform;
     std::shared_ptr<videocore::IAudioMixer> m_audioMixer;
     std::shared_ptr<videocore::IVideoMixer> m_videoMixer;
     std::shared_ptr<videocore::ITransform>  m_h264Encoder;
@@ -318,6 +322,7 @@ namespace videocore { namespace simpleApi {
 {
     if(m_audioMixer) {
         m_audioMixer->setSourceGain(m_micSource, micGain);
+        m_audioMixer->setSourceGain(m_auxMicSource, micGain);
         _micGain = micGain;
     }
 }
@@ -474,8 +479,8 @@ namespace videocore { namespace simpleApi {
     self.useAdaptiveBitrate = NO;
     self.aspectMode = aspectMode;
 
-    _previewView = [[VCPreviewView alloc] init];
-    [_previewView setScreenShotDelegate:self];
+    //_previewView = [[VCPreviewView alloc] init];
+    //[_previewView setScreenShotDelegate:self];
 
     self.videoZoomFactor = 1.f;
 
@@ -501,7 +506,9 @@ namespace videocore { namespace simpleApi {
     m_aspectTransform.reset();
     m_positionTransform.reset();
     m_micSource.reset();
+    m_auxMicSource.reset();
     m_cameraSource.reset();
+    m_auxCameraSource.reset();
     m_pbOutput.reset();
     [_previewView release];
     _previewView = nil;
@@ -755,7 +762,7 @@ namespace videocore { namespace simpleApi {
 
     {
         // Add video mixer
-        m_videoMixer = std::make_shared<videocore::iOS::GLESVideoMixer>(self.videoSize.width,
+        m_videoMixer = std::make_shared<videocore::iOS::CIVideoMixer>(self.videoSize.width,
                                                                         self.videoSize.height,
                                                                         frameDuration);
 
@@ -765,11 +772,11 @@ namespace videocore { namespace simpleApi {
         auto videoSplit = std::make_shared<videocore::Split>();
 
         m_videoSplit = videoSplit;
-        VCPreviewView* preview = (VCPreviewView*)self.previewView;
+        //VCPreviewView* preview = (VCPreviewView*)self.previewView;
 
         m_pbOutput = std::make_shared<videocore::simpleApi::PixelBufferOutput>([=](const void* const data, size_t size){
             CVPixelBufferRef ref = (CVPixelBufferRef)data;
-            [preview drawFrame:ref];
+            //[preview drawFrame:ref];
             if(self.rtmpSessionState == VCSessionStateNone) {
                 self.rtmpSessionState = VCSessionStatePreviewStarted;
             }
@@ -798,16 +805,19 @@ namespace videocore { namespace simpleApi {
                                                                                 );
 
 
+#if 0
         std::dynamic_pointer_cast<videocore::iOS::CameraSource>(m_cameraSource)->setupCamera(self.fps,(self.cameraState == VCCameraStateFront),self.useInterfaceOrientation,nil,^{
             m_cameraSource->setContinuousAutofocus(true);
             m_cameraSource->setContinuousExposure(true);
-
+#endif
             m_cameraSource->setOutput(aspectTransform);
 
-            m_videoMixer->setSourceFilter(m_cameraSource, dynamic_cast<videocore::IVideoFilter*>(m_videoMixer->filterFactory().filter("com.videocore.filters.bgra")));
+            //m_videoMixer->setSourceFilter(m_cameraSource, dynamic_cast<videocore::IVideoFilter*>(m_videoMixer->filterFactory().filter("com.videocore.filters.bgra")));
             _filter = VCFilterNormal;
             aspectTransform->setOutput(positionTransform);
             positionTransform->setOutput(m_videoMixer);
+            m_videoMixer->registerSource(m_cameraSource);
+
             m_aspectTransform = aspectTransform;
             m_positionTransform = positionTransform;
 
@@ -815,13 +825,63 @@ namespace videocore { namespace simpleApi {
             if ([_delegate respondsToSelector:@selector(didAddCameraSource:)]) {
                 [_delegate didAddCameraSource:self];
             }
+#if 0
         });
+#endif
     }
-    {
-        // Add mic source
-        m_micSource = std::make_shared<videocore::iOS::MicSource>(self.audioSampleRate, self.audioChannelCount);
-        m_micSource->setOutput(m_audioMixer);
 
+    {
+        // Add aux camera source
+        m_auxCameraSource = std::make_shared<videocore::iOS::CameraSource>();
+        m_auxCameraSource->setOrientationLocked(self.orientationLocked);
+        auto aspectTransform = std::make_shared<videocore::AspectTransform>(self.videoSize.width,self.videoSize.height,m_aspectMode);
+        
+        auto positionTransform = std::make_shared<videocore::PositionTransform>(self.videoSize.width/2, self.videoSize.height/2,
+                                                                                self.videoSize.width * self.videoZoomFactor, self.videoSize.height * self.videoZoomFactor,
+                                                                                self.videoSize.width, self.videoSize.height
+                                                                                );
+        
+        
+#if 0
+        std::dynamic_pointer_cast<videocore::iOS::CameraSource>(m_auxCameraSource)->setupCamera(self.fps,(self.cameraState == VCCameraStateFront),self.useInterfaceOrientation,nil,^{
+            m_auxCameraSource->setContinuousAutofocus(true);
+            m_auxCameraSource->setContinuousExposure(true);
+#endif
+            m_auxCameraSource->setOutput(aspectTransform);
+            m_auxCameraSource->setZIndex(2);
+            
+            //m_videoMixer->setSourceFilter(m_cameraSource, dynamic_cast<videocore::IVideoFilter*>(m_videoMixer->filterFactory().filter("com.videocore.filters.bgra")));
+            //_filter = VCFilterNormal;
+            aspectTransform->setOutput(positionTransform);
+            positionTransform->setOutput(m_videoMixer);
+            m_videoMixer->registerSource(m_auxCameraSource);
+
+            m_auxAspectTransform = aspectTransform;
+            m_auxPositionTransform = positionTransform;
+            
+            // Inform delegate that camera source has been added
+            if ([_delegate respondsToSelector:@selector(didAddCameraSource:)]) {
+                [_delegate didAddCameraSource:self];
+            }
+#if 0
+        });
+#endif
+    }
+
+    {
+        // Add local mic source
+        m_micSource = std::make_shared<videocore::iOS::MicSource>(self.audioSampleRate, 1);
+        m_micSource->setOutput(m_audioMixer);
+    }
+    
+    {
+        // Add remote mic source
+        m_auxMicSource = std::make_shared<videocore::iOS::MicSource>(self.audioSampleRate, 1);
+        m_auxMicSource->setOutput(m_audioMixer);
+    }
+
+    {
+        // Start mixers
         const auto epoch = std::chrono::steady_clock::now();
 
         m_audioMixer->setEpoch(epoch);
@@ -829,9 +889,9 @@ namespace videocore { namespace simpleApi {
 
         m_audioMixer->start();
         m_videoMixer->start();
-
     }
 }
+
 - (void) addEncodersAndPacketizers
 {
     int ctsOffset = 2000 / self.fps; // 2 * frame duration
@@ -888,6 +948,30 @@ namespace videocore { namespace simpleApi {
 
     
 }
+
+
+- (void) pushCameraBuffer: (CVPixelBufferRef) pixelBufferRef
+                     main: (BOOL)mainCamera {
+    if (mainCamera && m_cameraSource) {
+        m_cameraSource->bufferCaptured(pixelBufferRef);
+    }
+    if (!mainCamera && m_auxCameraSource) {
+        m_auxCameraSource->bufferCaptured(pixelBufferRef);
+    }
+}
+
+- (void) pushPCMBuffer: (uint8_t*)data
+             PCMLenTag: (size_t)size
+        InNumberFrames: (int)inNumberFrames
+                 local: (bool)isLocal {
+    if (isLocal && m_micSource) {
+        m_micSource->inputCallback(data, size, inNumberFrames);
+    }
+    if (!isLocal && m_auxMicSource) {
+        m_auxMicSource->inputCallback(data, size, inNumberFrames);
+    }
+}
+
 - (void) addPixelBufferSource: (UIImage*) image
                      withRect:(CGRect)rect {
     CGImageRef ref = [image CGImage];
@@ -926,6 +1010,7 @@ namespace videocore { namespace simpleApi {
     free(rawData);
     
 }
+
 - (NSString *) applicationDocumentsDirectory
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);

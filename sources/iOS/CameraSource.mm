@@ -84,7 +84,8 @@ namespace videocore { namespace iOS {
     m_orientationLocked(false),
     m_torchOn(false),
     m_useInterfaceOrientation(false),
-    m_captureSession(nullptr)
+    m_captureSession(nullptr),
+    m_zIndex(1)
     {}
     
     CameraSource::~CameraSource()
@@ -400,7 +401,7 @@ namespace videocore { namespace iOS {
             
             VideoBufferMetadata md(1.f / float(m_fps));
             
-            md.setData(1, m_matrix, false, shared_from_this());
+            md.setData(m_zIndex, m_matrix, false, shared_from_this());
             
             auto pixelBuffer = std::make_shared<Apple::PixelBuffer>(pixelBufferRef, true);
             

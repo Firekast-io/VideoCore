@@ -115,6 +115,13 @@ namespace videocore { namespace iOS {
         
         bool setContinuousExposure(bool wantsContinuous);
         
+        /*!
+         *  for Mixer
+         */
+        int zIndex() { return m_zIndex; }
+
+        void setZIndex(int zIndex) { m_zIndex = zIndex; }
+        
         
     public:
         /*! Used by Objective-C Capture Session */
@@ -150,7 +157,8 @@ namespace videocore { namespace iOS {
         bool m_torchOn;
         bool m_useInterfaceOrientation;
         bool m_orientationLocked;
-
+        
+        int  m_zIndex;
     };
     
 }

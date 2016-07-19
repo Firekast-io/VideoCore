@@ -185,8 +185,7 @@ namespace videocore { namespace Apple {
         @autoreleasepool {
             
             
-            NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferPixelFormatTypeKey : //@(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
-                                                  @(kCVPixelFormatType_32BGRA),
+            NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
                                                   (NSString*) kCVPixelBufferWidthKey : @(m_frameW),
                                                   (NSString*) kCVPixelBufferHeightKey : @(m_frameH),
                                                   (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,

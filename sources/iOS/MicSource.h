@@ -56,14 +56,14 @@ namespace videocore { namespace iOS {
          *
          */
         MicSource(double sampleRate = 44100.,
-                  int channelCount = 2,
-                  std::function<void(AudioUnit&)> excludeAudioUnit = nullptr);
+                  int channelCount = 2);
 
         /*! Destructor */
         ~MicSource();
 
 
     public:
+        void setupMic(std::function<void(AudioUnit&)> excludeAudioUnit = nullptr);
 
         /*! ISource::setOutput */
         void setOutput(std::shared_ptr<IOutput> output);

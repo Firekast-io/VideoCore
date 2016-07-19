@@ -83,18 +83,32 @@ static OSStatus handleInputBuffer(void *inRefCon,
 
 namespace videocore { namespace iOS {
 
-    MicSource::MicSource(double sampleRate, int channelCount, std::function<void(AudioUnit&)> excludeAudioUnit)
+    MicSource::MicSource(double sampleRate, int channelCount)
     : m_sampleRate(sampleRate), m_channelCount(channelCount), m_audioUnit(nullptr), m_component(nullptr)
     {
+    }
+    
+    MicSource::~MicSource() {
+        if(m_audioUnit) {
+            [[NSNotificationCenter defaultCenter] removeObserver:m_interruptionHandler];
+            [m_interruptionHandler release];
+            
+            AudioOutputUnitStop(m_audioUnit);
+            AudioComponentInstanceDispose(m_audioUnit);
+        }
         
-
+    }
+    
+    void
+    MicSource::setupMic(std::function<void(AudioUnit&)> excludeAudioUnit)
+    {
         AVAudioSession *session = [AVAudioSession sharedInstance];
-
+        
         __block MicSource* bThis = this;
-
+        
         PermissionBlock permission = ^(BOOL granted) {
             if(granted) {
-
+                
                 [session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionMixWithOthers error:nil];
                 //[session setMode:AVAudioSessionModeVideoChat error:nil];
                 [session setActive:YES error:nil];
@@ -151,18 +165,8 @@ namespace videocore { namespace iOS {
         } else {
             permission(true);
         }
+    }
 
-    }
-    MicSource::~MicSource() {
-        if(m_audioUnit) {
-            [[NSNotificationCenter defaultCenter] removeObserver:m_interruptionHandler];
-            [m_interruptionHandler release];
-            
-            AudioOutputUnitStop(m_audioUnit);
-            AudioComponentInstanceDispose(m_audioUnit);
-        }
-        
-    }
     void
     MicSource::inputCallback(uint8_t *data, size_t data_size, int inNumberFrames)
     {
