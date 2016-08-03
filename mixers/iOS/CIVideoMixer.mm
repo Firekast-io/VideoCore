@@ -94,14 +94,7 @@ namespace videocore { namespace iOS {
     //      texture.  Textures unused for more than 1 second will be released.
     //
     // -------------------------------------------------------------------------
-    
-    CISourceBuffer::~CISourceBuffer() {
-        if (m_currentBuffer) {
-            m_currentBuffer->setState(kVCPixelBufferStateAvailable);
-            m_currentBuffer = nullptr;
-        }
-    }
-    
+
     void
     CISourceBuffer::setBuffer(Apple::PixelBufferRef ref)
     {
@@ -113,6 +106,14 @@ namespace videocore { namespace iOS {
         m_currentBuffer = ref;
         m_time = std::chrono::steady_clock::now();
     }
+    
+    CISourceBuffer::~CISourceBuffer() {
+        if (m_currentBuffer) {
+            m_currentBuffer->setState(kVCPixelBufferStateAvailable);
+            m_currentBuffer = nullptr;
+        }
+    }
+
     // -------------------------------------------------------------------------
     //
     //
@@ -176,14 +177,14 @@ namespace videocore { namespace iOS {
     CIVideoMixer::setup()
     {
         if(!m_pixelBufferPool) {
-            NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
+            NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
                                                   (NSString*) kCVPixelBufferWidthKey : @(m_frameW),
                                                   (NSString*) kCVPixelBufferHeightKey : @(m_frameH),
                                                   (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,
                                                   (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{}};
             
-            CVPixelBufferCreate(kCFAllocatorDefault, m_frameW, m_frameH, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange, (CFDictionaryRef)pixelBufferOptions, &m_pixelBuffer[0]);
-            CVPixelBufferCreate(kCFAllocatorDefault, m_frameW, m_frameH, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange, (CFDictionaryRef)pixelBufferOptions, &m_pixelBuffer[1]);
+            CVPixelBufferCreate(kCFAllocatorDefault, m_frameW, m_frameH, kCVPixelFormatType_32BGRA, (CFDictionaryRef)pixelBufferOptions, &m_pixelBuffer[0]);
+            CVPixelBufferCreate(kCFAllocatorDefault, m_frameW, m_frameH, kCVPixelFormatType_32BGRA, (CFDictionaryRef)pixelBufferOptions, &m_pixelBuffer[1]);
         }
         else {
             CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, m_pixelBufferPool, &m_pixelBuffer[0]);
@@ -374,7 +375,6 @@ namespace videocore { namespace iOS {
 
                             } else if (i >= 2) {
                                 CIImage *ciImage2 = [CIImage imageWithCVPixelBuffer:iip->second.currentBuffer()->cvBuffer()];
-                                ciImage2 = [ciImage2 imageByApplyingTransform:CGAffineTransformMakeScale(.25f, .25f)];
                                 ciImage2 = [ciImage2 imageByApplyingTransform:CGAffineTransformMakeTranslation(10, 10)];
                                 ciImage = [ciImage2 imageByCompositingOverImage:ciImage];
 
