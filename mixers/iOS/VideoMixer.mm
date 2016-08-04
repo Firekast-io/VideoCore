@@ -111,6 +111,7 @@ namespace videocore { namespace iOS {
     void
     VideoMixer::setup() {
         CVPixelBufferRef blankPixelBufferRef = NULL;
+
         NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,
                                               (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{}};
 
@@ -118,7 +119,9 @@ namespace videocore { namespace iOS {
 
         auto ref = std::make_shared<Apple::PixelBuffer>(blankPixelBufferRef, true);
         ref->setState(kVCPixelBufferStateAcquired);
+
         m_currentBuffer = ref;
+        CVPixelBufferRelease(blankPixelBufferRef);
     }
     
     void
