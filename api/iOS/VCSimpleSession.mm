@@ -772,11 +772,15 @@ namespace videocore { namespace simpleApi {
         auto videoSplit = std::make_shared<videocore::Split>();
 
         m_videoSplit = videoSplit;
-        //VCPreviewView* preview = (VCPreviewView*)self.previewView;
+#if 0
+        VCPreviewView* preview = (VCPreviewView*)self.previewView;
+#endif
 
         m_pbOutput = std::make_shared<videocore::simpleApi::PixelBufferOutput>([=](const void* const data, size_t size){
             CVPixelBufferRef ref = (CVPixelBufferRef)data;
-            //[preview drawFrame:ref];
+#if 0
+            [preview drawFrame:ref];
+#endif
             if(self.rtmpSessionState == VCSessionStateNone) {
                 self.rtmpSessionState = VCSessionStatePreviewStarted;
             }
@@ -830,6 +834,7 @@ namespace videocore { namespace simpleApi {
 #endif
     }
 
+#if 1
     {
         // Add aux camera source
         m_auxCameraSource = std::make_shared<videocore::iOS::CameraSource>();
@@ -867,19 +872,20 @@ namespace videocore { namespace simpleApi {
         });
 #endif
     }
-
+#endif
+    
     {
         // Add local mic source
         m_micSource = std::make_shared<videocore::iOS::MicSource>(self.audioSampleRate, 1);
         m_micSource->setOutput(m_audioMixer);
     }
-    
+#if 0
     {
         // Add remote mic source
         m_auxMicSource = std::make_shared<videocore::iOS::MicSource>(self.audioSampleRate, 1);
         m_auxMicSource->setOutput(m_audioMixer);
     }
-
+#endif
     {
         // Start mixers
         const auto epoch = std::chrono::steady_clock::now();

@@ -24,8 +24,8 @@
  */
 
 
-#ifndef __videocore__GLESVideoMixer__
-#define __videocore__GLESVideoMixer__
+#ifndef __videocore__CIVideoMixer__
+#define __videocore__CIVideoMixer__
 
 #include <iostream>
 #include <videocore/mixers/IVideoMixer.hpp>
@@ -190,4 +190,4 @@ namespace videocore { namespace iOS {
     
 }
 }
-#endif /* defined(__videocore__GLESVideoMixer__) */
+#endif /* defined(__videocore__CIVideoMixer__) */

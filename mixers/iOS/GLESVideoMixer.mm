@@ -551,8 +551,6 @@ namespace videocore { namespace iOS {
                         }
                     }
                     glFlush();
-                    glPopGroupMarkerEXT();
-                    
                     
                     auto lout = this->m_output.lock();
                     if(lout) {
@@ -560,8 +558,11 @@ namespace videocore { namespace iOS {
                         MetaData<'vide'> md(std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - m_epoch).count());
                         lout->pushBuffer((uint8_t*)this->m_pixelBuffer[!current_fb], sizeof(this->m_pixelBuffer[!current_fb]), md);
                     }
+
+                    glFinish();
+                    glPopGroupMarkerEXT();
+
                     this->m_mixing = false;
-        
                 });
                 current_fb = !current_fb;
             }

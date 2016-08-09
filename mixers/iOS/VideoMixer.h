@@ -72,7 +72,7 @@ namespace videocore { namespace iOS {
         void sync();
         
         /*! IVideoMixer::filterFactory */
-        FilterFactory& filterFactory() { return nullptr; }
+        FilterFactory& filterFactory() { return m_filterFactory; }
         
         /*! IOutput::pushBuffer */
         void pushBuffer(const uint8_t* const data,
@@ -106,6 +106,8 @@ namespace videocore { namespace iOS {
         
     private:
         
+        FilterFactory m_filterFactory;
+
         double m_bufferDuration;
         
         std::weak_ptr<IOutput> m_output;

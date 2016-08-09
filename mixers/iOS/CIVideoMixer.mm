@@ -333,9 +333,10 @@ namespace videocore { namespace iOS {
         @autoreleasepool {
 
             EAGLContext *mixEAGLContext = [[[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2] autorelease];
-            NSDictionary *options = @{ kCIContextWorkingColorSpace : [NSNull null] };
+            NSDictionary *ccOptions = @{ kCIContextWorkingColorSpace : [NSNull null] };
+            NSDictionary *ciOptions = @{ kCIImageColorSpace : [NSNull null] };
 
-            CIContext *mixContext = [CIContext contextWithEAGLContext:mixEAGLContext options:options];
+            CIContext *mixContext = [CIContext contextWithEAGLContext:mixEAGLContext options:ccOptions];
             
             m_nextMixTime = m_epoch;
             
@@ -369,22 +370,22 @@ namespace videocore { namespace iOS {
                             if (iip == this->m_sourceBuffers.end() || !iip->second.currentBuffer()) continue;
                             
                             if (i == 1 || !ciImage) {
-                                ciImage = [CIImage imageWithCVPixelBuffer:iip->second.currentBuffer()->cvBuffer()];
-                                ciImage = [ciImage imageByApplyingTransform:CGAffineTransformMakeRotation(-M_PI/2)];
-                                ciImage = [ciImage imageByApplyingTransform:CGAffineTransformMakeTranslation(0, ciImage.extent.size.height)];
-
+                                ciImage = [CIImage imageWithCVPixelBuffer:iip->second.currentBuffer()->cvBuffer() options:ciOptions];
+                                ciImage = [ciImage imageByApplyingTransform:CGAffineTransformMakeTranslation(-56, 0)];
                             } else if (i >= 2) {
-                                CIImage *ciImage2 = [CIImage imageWithCVPixelBuffer:iip->second.currentBuffer()->cvBuffer()];
+                                CIImage *ciImage2 = [CIImage imageWithCVPixelBuffer:iip->second.currentBuffer()->cvBuffer() options:ciOptions];
                                 ciImage2 = [ciImage2 imageByApplyingTransform:CGAffineTransformMakeTranslation(10, 10)];
                                 ciImage = [ciImage2 imageByCompositingOverImage:ciImage];
-
                             }
                             //mat = this->m_sourceMats[*it];
                         }
                     }
 
                     if (ciImage) {
-                        [mixContext render:ciImage toCVPixelBuffer:this->m_pixelBuffer[current_fb]];
+                        [mixContext render:ciImage
+                           toCVPixelBuffer:this->m_pixelBuffer[current_fb]
+                                    bounds:CGRectMake(0, 0, 368, 640)
+                                colorSpace:nil];
                     }
 
                     auto lout = this->m_output.lock();

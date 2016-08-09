@@ -191,9 +191,9 @@ namespace videocore { namespace iOS {
             
             if (!m_paused.load()) {
                 auto lout = m_output.lock();
-                if (lout && m_currentBuffer && m_currentBuffer->cvBuffer) {
+                if (lout && m_currentBuffer && m_currentBuffer->cvBuffer()) {
                     MetaData<'vide'> md(std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - m_epoch).count());
-                    CVPixelBufferRef ref = m_currentBuffer->cvBuffer;
+                    CVPixelBufferRef ref = m_currentBuffer->cvBuffer();
                     lout->pushBuffer((uint8_t*)ref, sizeof(ref), md);
                 }
             }
