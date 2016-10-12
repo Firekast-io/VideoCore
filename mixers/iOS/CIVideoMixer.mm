@@ -401,6 +401,8 @@ namespace videocore { namespace iOS {
             wait:
                 m_mixThreadCond.wait_until(l, m_nextMixTime);
             }
+
+            PERF_CI_sync({});
         }
     }
     
