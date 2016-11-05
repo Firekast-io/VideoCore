@@ -159,8 +159,7 @@ namespace videocore {
 #endif
         }
         //add by WilliamShi
-        int size()
-        {
+        int size() {
             int size = 0;
 #if !_USE_GCD
             m_jobMutex.lock();

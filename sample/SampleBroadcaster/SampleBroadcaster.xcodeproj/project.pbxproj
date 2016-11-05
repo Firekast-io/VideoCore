@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C0653A2DE14CE186400AF1B /* libPods-SampleBroadcaster.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CC735A4E92C63890CCEB728E /* libPods-SampleBroadcaster.a */; };
 		1A7B35651942542400AB5FD6 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A7B35641942542400AB5FD6 /* GLKit.framework */; };
-		1A7B35671942564600AB5FD6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A7B35661942564600AB5FD6 /* libPods.a */; };
 		7265D5E0191994B80042DC3B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7265D5DF191994B80042DC3B /* Foundation.framework */; };
 		7265D5E2191994B80042DC3B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7265D5E1191994B80042DC3B /* CoreGraphics.framework */; };
 		7265D5E4191994B80042DC3B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7265D5E3191994B80042DC3B /* UIKit.framework */; };
@@ -24,9 +24,51 @@
 		7265D66B1919978E0042DC3B /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7265D66A1919978E0042DC3B /* CoreMedia.framework */; };
 		7265D66D191997930042DC3B /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7265D66C191997930042DC3B /* CoreVideo.framework */; };
 		7265D66F191997970042DC3B /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7265D66E191997970042DC3B /* OpenGLES.framework */; };
+		78C740AE1DAB7E03006E6183 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C740971DAB7DB0006E6183 /* ReplayKit.framework */; };
+		78C740B51DAB7E03006E6183 /* SampleHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 78C740B41DAB7E03006E6183 /* SampleHandler.m */; };
+		78C740CB1DAB7E04006E6183 /* SampleBroadcastUpload.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 78C740AD1DAB7E03006E6183 /* SampleBroadcastUpload.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		78C740D71DAB8131006E6183 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C740971DAB7DB0006E6183 /* ReplayKit.framework */; };
+		78C740D81DAB8131006E6183 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7265D5E3191994B80042DC3B /* UIKit.framework */; };
+		78C740DC1DAB8131006E6183 /* BroadcastViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78C740DB1DAB8131006E6183 /* BroadcastViewController.m */; };
+		78C740DF1DAB8131006E6183 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 78C740DD1DAB8131006E6183 /* MainInterface.storyboard */; };
+		78C740E31DAB8131006E6183 /* SampleBroadcastExtUI.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 78C740D61DAB8130006E6183 /* SampleBroadcastExtUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7DD38D279AC1B191336B9F84 /* libPods-SampleBroadcastUpload.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A794EADFB54A8A2372DABAF /* libPods-SampleBroadcastUpload.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		78C740C91DAB7E04006E6183 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7265D5D4191994B80042DC3B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 78C740AC1DAB7E03006E6183;
+			remoteInfo = SampleBroadcastUpload;
+		};
+		78C740E11DAB8131006E6183 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7265D5D4191994B80042DC3B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 78C740D51DAB8130006E6183;
+			remoteInfo = SampleBroadcastExtUI;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		78C740A81DAB7DB0006E6183 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				78C740E31DAB8131006E6183 /* SampleBroadcastExtUI.appex in Embed App Extensions */,
+				78C740CB1DAB7E04006E6183 /* SampleBroadcastUpload.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		0A794EADFB54A8A2372DABAF /* libPods-SampleBroadcastUpload.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SampleBroadcastUpload.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A7B35641942542400AB5FD6 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		1A7B35661942564600AB5FD6 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		7265D5DC191994B80042DC3B /* SampleBroadcaster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SampleBroadcaster.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,9 +92,21 @@
 		7265D66A1919978E0042DC3B /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		7265D66C191997930042DC3B /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		7265D66E191997970042DC3B /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		AC034311A4E2CCE0CCDA6C72 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		D811EF3F24704EBFB916513B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA5713A4139B758B1B834C67 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		742BF1371596B8F1A1ADE1EB /* Pods-SampleBroadcastUpload.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleBroadcastUpload.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SampleBroadcastUpload/Pods-SampleBroadcastUpload.debug.xcconfig"; sourceTree = "<group>"; };
+		78C740971DAB7DB0006E6183 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
+		78C740AD1DAB7E03006E6183 /* SampleBroadcastUpload.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SampleBroadcastUpload.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		78C740B31DAB7E03006E6183 /* SampleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleHandler.h; sourceTree = "<group>"; };
+		78C740B41DAB7E03006E6183 /* SampleHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SampleHandler.m; sourceTree = "<group>"; };
+		78C740B61DAB7E03006E6183 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		78C740D61DAB8130006E6183 /* SampleBroadcastExtUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SampleBroadcastExtUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		78C740DA1DAB8131006E6183 /* BroadcastViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BroadcastViewController.h; sourceTree = "<group>"; };
+		78C740DB1DAB8131006E6183 /* BroadcastViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BroadcastViewController.m; sourceTree = "<group>"; };
+		78C740DE1DAB8131006E6183 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		78C740E01DAB8131006E6183 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8CB326EB85FE8289E24B4010 /* Pods-SampleBroadcaster.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleBroadcaster.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SampleBroadcaster/Pods-SampleBroadcaster.debug.xcconfig"; sourceTree = "<group>"; };
+		943FB87F80A42010B807AE67 /* Pods-SampleBroadcaster.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleBroadcaster.release.xcconfig"; path = "Pods/Target Support Files/Pods-SampleBroadcaster/Pods-SampleBroadcaster.release.xcconfig"; sourceTree = "<group>"; };
+		99A0A2B912DC6C5F4BDDA65C /* Pods-SampleBroadcastUpload.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SampleBroadcastUpload.release.xcconfig"; path = "Pods/Target Support Files/Pods-SampleBroadcastUpload/Pods-SampleBroadcastUpload.release.xcconfig"; sourceTree = "<group>"; };
+		CC735A4E92C63890CCEB728E /* libPods-SampleBroadcaster.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SampleBroadcaster.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +115,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A7B35651942542400AB5FD6 /* GLKit.framework in Frameworks */,
-				1A7B35671942564600AB5FD6 /* libPods.a in Frameworks */,
 				7265D66F191997970042DC3B /* OpenGLES.framework in Frameworks */,
 				7265D66D191997930042DC3B /* CoreVideo.framework in Frameworks */,
 				7265D66B1919978E0042DC3B /* CoreMedia.framework in Frameworks */,
@@ -71,19 +124,51 @@
 				7265D5E2191994B80042DC3B /* CoreGraphics.framework in Frameworks */,
 				7265D5E4191994B80042DC3B /* UIKit.framework in Frameworks */,
 				7265D5E0191994B80042DC3B /* Foundation.framework in Frameworks */,
+				0C0653A2DE14CE186400AF1B /* libPods-SampleBroadcaster.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78C740AA1DAB7E03006E6183 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78C740AE1DAB7E03006E6183 /* ReplayKit.framework in Frameworks */,
+				7DD38D279AC1B191336B9F84 /* libPods-SampleBroadcastUpload.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78C740D31DAB8130006E6183 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78C740D71DAB8131006E6183 /* ReplayKit.framework in Frameworks */,
+				78C740D81DAB8131006E6183 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6505A49478660BF7A64D1D84 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8CB326EB85FE8289E24B4010 /* Pods-SampleBroadcaster.debug.xcconfig */,
+				943FB87F80A42010B807AE67 /* Pods-SampleBroadcaster.release.xcconfig */,
+				742BF1371596B8F1A1ADE1EB /* Pods-SampleBroadcastUpload.debug.xcconfig */,
+				99A0A2B912DC6C5F4BDDA65C /* Pods-SampleBroadcastUpload.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		7265D5D3191994B80042DC3B = {
 			isa = PBXGroup;
 			children = (
 				7265D5E5191994B80042DC3B /* SampleBroadcaster */,
+				78C740AF1DAB7E03006E6183 /* SampleBroadcastUpload */,
+				78C740D91DAB8131006E6183 /* SampleBroadcastExtUI */,
 				7265D5DE191994B80042DC3B /* Frameworks */,
 				7265D5DD191994B80042DC3B /* Products */,
-				7314D3F09AB131B5F8068CD5 /* Pods */,
+				6505A49478660BF7A64D1D84 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,6 +176,8 @@
 			isa = PBXGroup;
 			children = (
 				7265D5DC191994B80042DC3B /* SampleBroadcaster.app */,
+				78C740AD1DAB7E03006E6183 /* SampleBroadcastUpload.appex */,
+				78C740D61DAB8130006E6183 /* SampleBroadcastExtUI.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -110,7 +197,9 @@
 				7265D5E1191994B80042DC3B /* CoreGraphics.framework */,
 				7265D5E3191994B80042DC3B /* UIKit.framework */,
 				7265D601191994B80042DC3B /* XCTest.framework */,
-				D811EF3F24704EBFB916513B /* libPods.a */,
+				CC735A4E92C63890CCEB728E /* libPods-SampleBroadcaster.a */,
+				78C740971DAB7DB0006E6183 /* ReplayKit.framework */,
+				0A794EADFB54A8A2372DABAF /* libPods-SampleBroadcastUpload.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -140,13 +229,25 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		7314D3F09AB131B5F8068CD5 /* Pods */ = {
+		78C740AF1DAB7E03006E6183 /* SampleBroadcastUpload */ = {
 			isa = PBXGroup;
 			children = (
-				DA5713A4139B758B1B834C67 /* Pods.debug.xcconfig */,
-				AC034311A4E2CCE0CCDA6C72 /* Pods.release.xcconfig */,
+				78C740B31DAB7E03006E6183 /* SampleHandler.h */,
+				78C740B41DAB7E03006E6183 /* SampleHandler.m */,
+				78C740B61DAB7E03006E6183 /* Info.plist */,
 			);
-			name = Pods;
+			path = SampleBroadcastUpload;
+			sourceTree = "<group>";
+		};
+		78C740D91DAB8131006E6183 /* SampleBroadcastExtUI */ = {
+			isa = PBXGroup;
+			children = (
+				78C740DA1DAB8131006E6183 /* BroadcastViewController.h */,
+				78C740DB1DAB8131006E6183 /* BroadcastViewController.m */,
+				78C740DD1DAB8131006E6183 /* MainInterface.storyboard */,
+				78C740E01DAB8131006E6183 /* Info.plist */,
+			);
+			path = SampleBroadcastExtUI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,20 +257,60 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7265D611191994B80042DC3B /* Build configuration list for PBXNativeTarget "SampleBroadcaster" */;
 			buildPhases = (
-				82EBE6B776CE4DC9BB603CFD /* Check Pods Manifest.lock */,
+				60FA1F6584665E93F8C5866F /* [CP] Check Pods Manifest.lock */,
 				7265D5D8191994B80042DC3B /* Sources */,
 				7265D5D9191994B80042DC3B /* Frameworks */,
 				7265D5DA191994B80042DC3B /* Resources */,
-				9EB59F6A033C4DB08E180EDA /* Copy Pods Resources */,
+				7D2E3F42803C8CFEB941F8C6 /* [CP] Embed Pods Frameworks */,
+				C6F887A756E7C524CDE2F72B /* [CP] Copy Pods Resources */,
+				78C740A81DAB7DB0006E6183 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				78C740CA1DAB7E04006E6183 /* PBXTargetDependency */,
+				78C740E21DAB8131006E6183 /* PBXTargetDependency */,
 			);
 			name = SampleBroadcaster;
 			productName = SampleBroadcaster;
 			productReference = 7265D5DC191994B80042DC3B /* SampleBroadcaster.app */;
 			productType = "com.apple.product-type.application";
+		};
+		78C740AC1DAB7E03006E6183 /* SampleBroadcastUpload */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 78C740CF1DAB7E04006E6183 /* Build configuration list for PBXNativeTarget "SampleBroadcastUpload" */;
+			buildPhases = (
+				2C32271203362FA2E2E1090F /* [CP] Check Pods Manifest.lock */,
+				78C740A91DAB7E03006E6183 /* Sources */,
+				78C740AA1DAB7E03006E6183 /* Frameworks */,
+				78C740AB1DAB7E03006E6183 /* Resources */,
+				50B63543B3074B5E9CDBE589 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SampleBroadcastUpload;
+			productName = SampleBroadcastUpload;
+			productReference = 78C740AD1DAB7E03006E6183 /* SampleBroadcastUpload.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		78C740D51DAB8130006E6183 /* SampleBroadcastExtUI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 78C740E41DAB8131006E6183 /* Build configuration list for PBXNativeTarget "SampleBroadcastExtUI" */;
+			buildPhases = (
+				78C740D21DAB8130006E6183 /* Sources */,
+				78C740D31DAB8130006E6183 /* Frameworks */,
+				78C740D41DAB8130006E6183 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SampleBroadcastExtUI;
+			productName = SampleBroadcastExtUI;
+			productReference = 78C740D61DAB8130006E6183 /* SampleBroadcastExtUI.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -179,6 +320,21 @@
 			attributes = {
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = videocore;
+				TargetAttributes = {
+					7265D5DB191994B80042DC3B = {
+						DevelopmentTeam = REQL7UAHBQ;
+					};
+					78C740AC1DAB7E03006E6183 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = REQL7UAHBQ;
+						ProvisioningStyle = Automatic;
+					};
+					78C740D51DAB8130006E6183 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = REQL7UAHBQ;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 7265D5D7191994B80042DC3B /* Build configuration list for PBXProject "SampleBroadcaster" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -194,6 +350,8 @@
 			projectRoot = "";
 			targets = (
 				7265D5DB191994B80042DC3B /* SampleBroadcaster */,
+				78C740AC1DAB7E03006E6183 /* SampleBroadcastUpload */,
+				78C740D51DAB8130006E6183 /* SampleBroadcastExtUI */,
 			);
 		};
 /* End PBXProject section */
@@ -209,37 +367,97 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		78C740AB1DAB7E03006E6183 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78C740D41DAB8130006E6183 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78C740DF1DAB8131006E6183 /* MainInterface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		82EBE6B776CE4DC9BB603CFD /* Check Pods Manifest.lock */ = {
+		2C32271203362FA2E2E1090F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		9EB59F6A033C4DB08E180EDA /* Copy Pods Resources */ = {
+		50B63543B3074B5E9CDBE589 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SampleBroadcastUpload/Pods-SampleBroadcastUpload-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		60FA1F6584665E93F8C5866F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		7D2E3F42803C8CFEB941F8C6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SampleBroadcaster/Pods-SampleBroadcaster-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C6F887A756E7C524CDE2F72B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SampleBroadcaster/Pods-SampleBroadcaster-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -255,7 +473,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		78C740A91DAB7E03006E6183 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78C740B51DAB7E03006E6183 /* SampleHandler.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		78C740D21DAB8130006E6183 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				78C740DC1DAB8131006E6183 /* BroadcastViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		78C740CA1DAB7E04006E6183 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 78C740AC1DAB7E03006E6183 /* SampleBroadcastUpload */;
+			targetProxy = 78C740C91DAB7E04006E6183 /* PBXContainerItemProxy */;
+		};
+		78C740E21DAB8131006E6183 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 78C740D51DAB8130006E6183 /* SampleBroadcastExtUI */;
+			targetProxy = 78C740E11DAB8131006E6183 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		7265D5E8191994B80042DC3B /* InfoPlist.strings */ = {
@@ -272,6 +519,14 @@
 				7265D5F2191994B80042DC3B /* Base */,
 			);
 			name = Main_iPhone.storyboard;
+			sourceTree = "<group>";
+		};
+		78C740DD1DAB8131006E6183 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				78C740DE1DAB8131006E6183 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -315,7 +570,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -354,7 +609,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -363,7 +618,7 @@
 		};
 		7265D612191994B80042DC3B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DA5713A4139B758B1B834C67 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 8CB326EB85FE8289E24B4010 /* Pods-SampleBroadcaster.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -373,6 +628,7 @@
 				GCC_PREFIX_HEADER = "SampleBroadcaster/SampleBroadcaster-Prefix.pch";
 				INFOPLIST_FILE = "SampleBroadcaster/SampleBroadcaster-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.soplwang.SampleBroadcaster;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -382,7 +638,7 @@
 		};
 		7265D613191994B80042DC3B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC034311A4E2CCE0CCDA6C72 /* Pods.release.xcconfig */;
+			baseConfigurationReference = 943FB87F80A42010B807AE67 /* Pods-SampleBroadcaster.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -392,10 +648,113 @@
 				GCC_PREFIX_HEADER = "SampleBroadcaster/SampleBroadcaster-Prefix.pch";
 				INFOPLIST_FILE = "SampleBroadcaster/SampleBroadcaster-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.soplwang.SampleBroadcaster;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		78C740D01DAB7E04006E6183 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 742BF1371596B8F1A1ADE1EB /* Pods-SampleBroadcastUpload.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = REQL7UAHBQ;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = SampleBroadcastUpload/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.soplwang.SampleBroadcaster.SampleBroadcastUpload;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		78C740D11DAB7E04006E6183 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 99A0A2B912DC6C5F4BDDA65C /* Pods-SampleBroadcastUpload.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = REQL7UAHBQ;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = SampleBroadcastUpload/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.soplwang.SampleBroadcaster.SampleBroadcastUpload;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		78C740E51DAB8131006E6183 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = REQL7UAHBQ;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = SampleBroadcastExtUI/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.soplwang.SampleBroadcaster.SampleBroadcastExtUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		78C740E61DAB8131006E6183 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = REQL7UAHBQ;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				INFOPLIST_FILE = SampleBroadcastExtUI/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.soplwang.SampleBroadcaster.SampleBroadcastExtUI;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -416,6 +775,24 @@
 			buildConfigurations = (
 				7265D612191994B80042DC3B /* Debug */,
 				7265D613191994B80042DC3B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		78C740CF1DAB7E04006E6183 /* Build configuration list for PBXNativeTarget "SampleBroadcastUpload" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78C740D01DAB7E04006E6183 /* Debug */,
+				78C740D11DAB7E04006E6183 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		78C740E41DAB8131006E6183 /* Build configuration list for PBXNativeTarget "SampleBroadcastExtUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				78C740E51DAB8131006E6183 /* Debug */,
+				78C740E61DAB8131006E6183 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

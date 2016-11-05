@@ -100,7 +100,7 @@ namespace videocore { namespace iOS {
     }
     
     void
-    MicSource::setupMic(std::function<void(AudioUnit&)> excludeAudioUnit)
+    MicSource::setupMic(std::function<void(AudioUnit&)> excludeAudioUnit, void (^callbackBlock)(void))
     {
         AVAudioSession *session = [AVAudioSession sharedInstance];
         
@@ -158,6 +158,9 @@ namespace videocore { namespace iOS {
                     DLog("Failed to start microphone!");
                 }
             }
+            if (callbackBlock) {
+                callbackBlock();
+            }
         };
         
         if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
@@ -177,7 +180,7 @@ namespace videocore { namespace iOS {
             md.setData(m_sampleRate,
                        16,
                        m_channelCount,
-                       kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
+                       kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsPacked,
                        m_channelCount * 2,
                        inNumberFrames,
                        false,

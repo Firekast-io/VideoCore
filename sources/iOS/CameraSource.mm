@@ -33,6 +33,12 @@
 #include <../Public/glm/glm.hpp>
 #include <../Public/glm/gtc/matrix_transform.hpp>
 
+#if defined(__has_feature)
+  #if __has_feature(attribute_availability_app_extension)
+    #define VC_APP_EXTENSIONS 1
+  #endif
+#endif
+
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 @interface sbCallback: NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
@@ -329,14 +335,17 @@ namespace videocore { namespace iOS {
     CameraSource::reorientCamera()
     {
         if(!m_captureSession) return;
-        
+
+#if !VC_APP_EXTENSIONS
         auto orientation = m_useInterfaceOrientation ? [[UIApplication sharedApplication] statusBarOrientation] : [[UIDevice currentDevice] orientation];
         
         // use interface orientation as fallback if device orientation is facedown, faceup or unknown
         if(orientation==UIDeviceOrientationFaceDown || orientation==UIDeviceOrientationFaceUp || orientation==UIDeviceOrientationUnknown) {
             orientation =[[UIApplication sharedApplication] statusBarOrientation];
         }
-        
+#else
+        auto orientation = [[UIDevice currentDevice] orientation];
+#endif
         //bool reorient = false;
         
         AVCaptureSession* session = (AVCaptureSession*)m_captureSession;

@@ -74,7 +74,8 @@ namespace videocore { namespace Apple {
            m_outBitsPerChannel == inBitsPerChannel &&
            m_outChannelCount == inChannelCount
            && !(inFlags & kAudioFormatFlagIsNonInterleaved)
-           && !(inFlags & kAudioFormatFlagIsFloat))
+           && !(inFlags & kAudioFormatFlagIsFloat)
+           && !(inFlags & kAudioFormatFlagIsBigEndian))
         {
             // No resampling necessary
             return std::make_shared<Buffer>();

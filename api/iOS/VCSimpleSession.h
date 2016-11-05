@@ -151,23 +151,10 @@ typedef NS_ENUM(NSInteger, VCFilter) {
  *  basically end up with the bottom-right quadrant of the image hanging out at the top-left corner of
  *  your video)
  */
+
 - (void) addPixelBufferSource: (UIImage*) image
                      withRect: (CGRect) rect;
 
-
-/*! Used by Camera Capture Session */
-- (void) pushCameraBuffer: (CVPixelBufferRef) pixelBufferRef
-                     main: (BOOL)mainCamera;
-
-
-/*! Used by Mic Capture Session */
-- (void) pushPCMBuffer: (uint8_t*)data
-             PCMLenTag: (size_t)size
-        InNumberFrames: (int)inNumberFrames
-                 local: (bool)isLocal;
-
-
 - (void) takeScreenShot;
-
 
 @end

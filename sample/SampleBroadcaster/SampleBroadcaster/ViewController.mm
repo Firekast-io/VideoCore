@@ -24,7 +24,7 @@
  */
 
 #import "ViewController.h"
-#import "VCSimpleSession.h"
+#import <videocore/api/iOS/VCSimpleSession.h>
 
 
 @interface ViewController () <VCSessionDelegate>
@@ -38,7 +38,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    _session = [[VCSimpleSession alloc] initWithVideoSize:CGSizeMake(1280, 720) frameRate:30 bitrate:1000000 useInterfaceOrientation:NO];
+    _session = [[VCSimpleSession alloc] initWithVideoSize:CGSizeMake(368, 640) frameRate:20 bitrate:650000 useInterfaceOrientation:NO];
     
     [self.previewView addSubview:_session.previewView];
     _session.previewView.frame = self.previewView.bounds;
@@ -66,7 +66,7 @@
         case VCSessionStatePreviewStarted:
         case VCSessionStateEnded:
         case VCSessionStateError:
-            [_session startRtmpSessionWithURL:@"rtmp://192.168.1.151/live" andStreamKey:@"myStream"];
+            [_session startRtmpSessionWithURL:@"rtmp://push1.arenazb.hupu.com/test" andStreamKey:@"slk"];
             break;
         default:
             [_session endRtmpSession];

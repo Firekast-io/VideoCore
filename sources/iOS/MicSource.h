@@ -63,7 +63,7 @@ namespace videocore { namespace iOS {
 
 
     public:
-        void setupMic(std::function<void(AudioUnit&)> excludeAudioUnit = nullptr);
+        void setupMic(std::function<void(AudioUnit&)> excludeAudioUnit = nil, void (^callbackBlock)(void) = nil);
 
         /*! ISource::setOutput */
         void setOutput(std::shared_ptr<IOutput> output);
