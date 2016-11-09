@@ -410,12 +410,13 @@ static const int kMinVideoBitrate = 150000;
     
     {
         // Add audio mixer
-        const double aacPacketTime = 44100. / self.audioSampleRate;
+        const double aacPacketTime = 1024. / self.audioSampleRate;
         
         m_audioMixer = std::make_shared<videocore::Apple::AudioMixer>(self.audioChannelCount,
                                                                       self.audioSampleRate,
                                                                       16,
-                                                                      aacPacketTime);
+                                                                      aacPacketTime,
+                                                                      .5);
         
         // The H.264 Encoder introduces about 2 frames of latency, so we will set the minimum audio buffer duration to 2 frames.
         m_audioMixer->setMinimumBufferDuration(frameDuration*2);

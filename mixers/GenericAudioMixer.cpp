@@ -69,7 +69,7 @@ static inline int16_t b24_to_b16(void* v) {
 }
 extern std::string g_tmpFolder;
 
-static const int kMixWindowCount = 10;
+static const int kMixWindowCount = 48;
 //static const int kWindowBufferCount = 0;
 
 static const float kE = 2.7182818284590f;
@@ -94,13 +94,15 @@ namespace videocore {
     GenericAudioMixer::GenericAudioMixer(int outChannelCount,
                                          int outFrequencyInHz,
                                          int outBitsPerChannel,
-                                         double frameDuration)
+                                         double frameDuration,
+                                         double latency)
     :
     m_bufferDuration(frameDuration),
     m_frameDuration(frameDuration),
     m_outChannelCount(outChannelCount),
     m_outFrequencyInHz(outFrequencyInHz),
     m_outBitsPerChannel(16),
+    m_latency(latency),
     m_exiting(false),
     m_mixQueue("com.videocore.audiomix", kJobQueuePriorityHigh),
     m_outgoingWindow(nullptr),
@@ -181,7 +183,8 @@ namespace videocore {
         
         if(inMeta.size() >= 5) {
             const auto inSource = inMeta.getData<kAudioMetadataSource>() ;
-            const auto cMixTime = std::chrono::steady_clock::now();
+            const auto us_latency = std::chrono::microseconds(static_cast<long long>(m_latency * 1000000.)) ;
+            const auto cMixTime = std::chrono::steady_clock::now() - us_latency;
             MixWindow* currentWindow = m_currentWindow;
             auto lSource = inSource.lock();
             if(lSource) {
@@ -400,6 +403,7 @@ namespace videocore {
     GenericAudioMixer::mixThread()
     {
         const auto us = std::chrono::microseconds(static_cast<long long>(m_frameDuration * 1000000.)) ;
+        const auto us_latency = std::chrono::microseconds(static_cast<long long>(m_latency * 1000000.)) ;
 
         const auto start = m_epoch;
         
@@ -412,7 +416,7 @@ namespace videocore {
 
             auto now = std::chrono::steady_clock::now();
             
-            if( now >= m_currentWindow->next->start ) {
+            if( now >= m_currentWindow->next->start + us_latency ) {
                 
                 auto currentTime = m_nextMixTime;
                 
@@ -441,7 +445,7 @@ namespace videocore {
                 
             }
             if(!m_exiting.load()) {
-                m_mixThreadCond.wait_until(l, m_currentWindow->next->start);
+                m_mixThreadCond.wait_until(l, m_currentWindow->next->start + us_latency);
             }
         }
         DLog("Exiting audio mixer...\n");
