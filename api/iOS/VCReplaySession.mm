@@ -415,11 +415,11 @@ static const int kMinVideoBitrate = 150000;
         m_audioMixer = std::make_shared<videocore::Apple::AudioMixer>(self.audioChannelCount,
                                                                       self.audioSampleRate,
                                                                       16,
-                                                                      aacPacketTime,
-                                                                      .5);
+                                                                      aacPacketTime);
         
         // The H.264 Encoder introduces about 2 frames of latency, so we will set the minimum audio buffer duration to 2 frames.
-        m_audioMixer->setMinimumBufferDuration(frameDuration*2);
+        // ReplayKit makes about 0.5s latency to post data for us.
+        m_audioMixer->setMinimumBufferDuration(frameDuration*2 + .5);
     }
 #ifdef __APPLE__
 #ifdef TARGET_OS_IPHONE
@@ -529,11 +529,15 @@ static const int kMinVideoBitrate = 150000;
         uint8_t *data = (uint8_t*)audioBuffer.mData;
         size_t size = audioBuffer.mDataByteSize;
         int numFrames = size / 2;
+        
+//      if (isMic) {
+//          NSLog(@"DUMP: audio size: %ld, chan: %d", size, audioBuffer.mNumberChannels);
+//          [self uploadAudio:data len:size];
+//      }
 
-//        if (isMic) {
-//            NSLog(@"DUMP: audio size: %ld, chan: %d", size, audioBuffer.mNumberChannels);
-//            [self uploadAudio:data len:size];
-//        }
+        for (auto ptr = reinterpret_cast<uint16_t*>(data), endp = ptr + numFrames; ptr < endp; ++ptr) {
+            *ptr = CFSwapInt16BigToHost(*ptr);
+        }
 
         if (isMic && m_micSource) {
             m_micSource->inputCallback(data, size, numFrames);

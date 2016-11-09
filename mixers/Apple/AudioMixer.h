@@ -52,8 +52,7 @@ namespace videocore { namespace Apple {
         AudioMixer(int outChannelCount,
                    int outFrequencyInHz,
                    int outBitsPerChannel,
-                   double frameDuration,
-                   double latency = 0);
+                   double frameDuration);
         
         /*! Destructor */
         ~AudioMixer();

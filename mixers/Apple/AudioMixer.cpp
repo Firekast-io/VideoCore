@@ -46,9 +46,8 @@ namespace videocore { namespace Apple {
     AudioMixer::AudioMixer(int outChannelCount,
                            int outFrequencyInHz,
                            int outBitsPerChannel,
-                           double frameDuration,
-                           double latency)
-    : GenericAudioMixer(outChannelCount, outFrequencyInHz, outBitsPerChannel, frameDuration, latency)
+                           double frameDuration)
+    : GenericAudioMixer(outChannelCount, outFrequencyInHz, outBitsPerChannel, frameDuration)
     {
         DLog("Apple::AudioMixer");
     }

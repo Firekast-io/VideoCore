@@ -69,7 +69,7 @@ static inline int16_t b24_to_b16(void* v) {
 }
 extern std::string g_tmpFolder;
 
-static const int kMixWindowCount = 48;
+static const int kMixWindowCount = 50;
 //static const int kWindowBufferCount = 0;
 
 static const float kE = 2.7182818284590f;
@@ -94,15 +94,13 @@ namespace videocore {
     GenericAudioMixer::GenericAudioMixer(int outChannelCount,
                                          int outFrequencyInHz,
                                          int outBitsPerChannel,
-                                         double frameDuration,
-                                         double latency)
+                                         double frameDuration)
     :
     m_bufferDuration(frameDuration),
     m_frameDuration(frameDuration),
     m_outChannelCount(outChannelCount),
     m_outFrequencyInHz(outFrequencyInHz),
     m_outBitsPerChannel(16),
-    m_latency(latency),
     m_exiting(false),
     m_mixQueue("com.videocore.audiomix", kJobQueuePriorityHigh),
     m_outgoingWindow(nullptr),
@@ -154,17 +152,13 @@ namespace videocore {
     GenericAudioMixer::registerSource(std::shared_ptr<ISource> source,
                                       size_t inBufferSize)
     {
-        auto hash = std::hash<std::shared_ptr< ISource> >()(source);
-        size_t bufferSize = (inBufferSize ? inBufferSize : (m_bytesPerSample * m_outFrequencyInHz * m_bufferDuration * 4)); // 4 frames of buffer space.
-
-        std::unique_ptr<RingBuffer> buffer(new RingBuffer(bufferSize));
-        
+        auto hash = std::hash<std::shared_ptr<ISource> >()(source);
         m_inGain[hash] = 1.f;
     }
     void
     GenericAudioMixer::unregisterSource(std::shared_ptr<ISource> source)
     {
-        auto hash = std::hash<std::shared_ptr< ISource> >()(source);
+        auto hash = std::hash<std::shared_ptr<ISource> >()(source);
 
         m_mixQueue.enqueue([=]() {
             auto iit = m_inGain.find(hash);
@@ -183,10 +177,10 @@ namespace videocore {
         
         if(inMeta.size() >= 5) {
             const auto inSource = inMeta.getData<kAudioMetadataSource>() ;
-            const auto us_latency = std::chrono::microseconds(static_cast<long long>(m_latency * 1000000.)) ;
-            const auto cMixTime = std::chrono::steady_clock::now() - us_latency;
+            const auto cMixTime = std::chrono::steady_clock::now();
             MixWindow* currentWindow = m_currentWindow;
             auto lSource = inSource.lock();
+
             if(lSource) {
                 
                 auto ret = resample(data, size, inMeta);
@@ -197,7 +191,9 @@ namespace videocore {
                 }
                 
                 m_mixQueue.enqueue([=]() {
-                    auto mixTime = cMixTime;
+                    auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
+
+                    auto mixTime = cMixTime - std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                     
                     const float g = 0.70710678118f; // 1 / sqrt(2)
                     
@@ -230,8 +226,6 @@ namespace videocore {
                     } else {
                         startOffset = 0;
                     }
-                    
-                    auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
 
                     const float mult = m_inGain[hash] * g;
                     
@@ -403,7 +397,8 @@ namespace videocore {
     GenericAudioMixer::mixThread()
     {
         const auto us = std::chrono::microseconds(static_cast<long long>(m_frameDuration * 1000000.)) ;
-        const auto us_latency = std::chrono::microseconds(static_cast<long long>(m_latency * 1000000.)) ;
+
+        const auto us_buf_duration = std::chrono::microseconds(static_cast<long long>(m_bufferDuration * 1000000.)) ;
 
         const auto start = m_epoch;
         
@@ -416,7 +411,7 @@ namespace videocore {
 
             auto now = std::chrono::steady_clock::now();
             
-            if( now >= m_currentWindow->next->start + us_latency ) {
+            if( now >= m_nextMixTime + us_buf_duration ) {
                 
                 auto currentTime = m_nextMixTime;
                 
@@ -445,7 +440,7 @@ namespace videocore {
                 
             }
             if(!m_exiting.load()) {
-                m_mixThreadCond.wait_until(l, m_currentWindow->next->start + us_latency);
+                m_mixThreadCond.wait_until(l, m_nextMixTime + us_buf_duration);
             }
         }
         DLog("Exiting audio mixer...\n");

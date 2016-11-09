@@ -82,8 +82,7 @@ namespace videocore {
         GenericAudioMixer(int outChannelCount,
                           int outFrequencyInHz,
                           int outBitsPerChannel,
-                          double frameDuration,
-                          double latency = 0);
+                          double frameDuration);
 
         /*! Destructor */
         ~GenericAudioMixer();
@@ -161,7 +160,6 @@ namespace videocore {
         
         double m_frameDuration;
         double m_bufferDuration;
-        double m_latency;
         
         std::thread m_mixThread;
         std::mutex  m_mixMutex;

@@ -180,7 +180,7 @@ namespace videocore { namespace iOS {
             md.setData(m_sampleRate,
                        16,
                        m_channelCount,
-                       kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsBigEndian | kAudioFormatFlagIsPacked,
+                       kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked,
                        m_channelCount * 2,
                        inNumberFrames,
                        false,
