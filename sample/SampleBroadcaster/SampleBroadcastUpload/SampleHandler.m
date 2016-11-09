@@ -34,7 +34,7 @@
     NSLog(@"broadcastStartedWithSetupInfo");
 
     NSLog(@"Starting RTMP session");
-    [[SampleHandler sharedSession] startRtmpSessionWithURL:@"rtmp://push1.arenazb.hupu.com/test" andStreamKey:@"slk2"];
+    [[SampleHandler sharedSession] startRtmpSessionWithURL:@"rtmp://192.168.1.1" andStreamKey:@"test"];
 }
 
 - (void)broadcastPaused {

@@ -66,7 +66,7 @@
         case VCSessionStatePreviewStarted:
         case VCSessionStateEnded:
         case VCSessionStateError:
-            [_session startRtmpSessionWithURL:@"rtmp://push1.arenazb.hupu.com/test" andStreamKey:@"slk"];
+            [_session startRtmpSessionWithURL:@"rtmp://192.168.1.1" andStreamKey:@"test"];
             break;
         default:
             [_session endRtmpSession];
