@@ -28,6 +28,20 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
+#if TARGET_OS_IPHONE
+#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
+#define VERSION_OK 1
+#else
+#define VERSION_OK 0
+#endif
+#else
+#define VERSION_OK (1090 <= MAC_OS_X_VERSION_MAX_ALLOWED)
+#endif
+
+#if VERSION_OK==1
+#include <VideoToolbox/VideoToolbox.h>
+#endif
+
 #include <sys/stat.h>
 
 namespace videocore { namespace iOS {
@@ -81,8 +95,11 @@ namespace videocore { namespace iOS {
                 settings = @{AVVideoCodecKey: AVVideoCodecH264,
                              AVVideoCompressionPropertiesKey: @{AVVideoAverageBitRateKey: @(m_bitrate),
                                                                 AVVideoMaxKeyFrameIntervalKey: @(m_fps*2),
-                                                                AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline41/*,
-                                                                AVVideoAllowFrameReorderingKey: @NO*/
+                                                                AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline41,
+                                                                /*AVVideoAllowFrameReorderingKey: @NO,*/
+                                                                (__bridge NSString *)kVTCompressionPropertyKey_PixelTransferProperties: @{
+                                                                        (__bridge NSString *)kVTPixelTransferPropertyKey_ScalingMode: (__bridge NSString *)kVTScalingMode_Letterbox
+                                                                        }
                                                                 },
                              AVVideoWidthKey: @(m_frameW),
                              AVVideoHeightKey: @(m_frameH)
@@ -91,7 +108,10 @@ namespace videocore { namespace iOS {
                 settings = @{AVVideoCodecKey: AVVideoCodecH264,
                              AVVideoCompressionPropertiesKey: @{AVVideoAverageBitRateKey: @(m_bitrate),
                                                                 AVVideoMaxKeyFrameIntervalKey: @(m_fps*2),
-                                                                AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline31
+                                                                AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline31,
+                                                                (__bridge NSString *)kVTCompressionPropertyKey_PixelTransferProperties: @{
+                                                                        (__bridge NSString *)kVTPixelTransferPropertyKey_ScalingMode: (__bridge NSString *)kVTScalingMode_Letterbox
+                                                                        }
                                                                 },
                              AVVideoWidthKey: @(m_frameW),
                              AVVideoHeightKey: @(m_frameH)

@@ -530,18 +530,18 @@ static const int kMinVideoBitrate = 150000;
         size_t size = audioBuffer.mDataByteSize;
         int numFrames = size / 2;
         
-//      if (isMic) {
-//          NSLog(@"DUMP: audio size: %ld, chan: %d", size, audioBuffer.mNumberChannels);
-//          [self uploadAudio:data len:size];
-//      }
-
-        for (auto ptr = reinterpret_cast<uint16_t*>(data), endp = ptr + numFrames; ptr < endp; ++ptr) {
-            *ptr = CFSwapInt16BigToHost(*ptr);
-        }
+//        if (!isMic) {
+//            NSLog(@"DUMP: audio size: %ld, chan: %d", size, audioBuffer.mNumberChannels);
+//            [self uploadAudio:data len:size];
+//        }
 
         if (isMic && m_micSource) {
             m_micSource->inputCallback(data, size, numFrames);
-        } else if (!isMic && m_appAudioSource) {
+        }
+        else if (!isMic && m_appAudioSource) {
+            for (auto ptr = reinterpret_cast<uint16_t*>(data), endp = ptr + numFrames; ptr < endp; ++ptr) {
+                *ptr = CFSwapInt16BigToHost(*ptr);
+            }
             m_appAudioSource->inputCallback(data, size, numFrames);
         }
     }
