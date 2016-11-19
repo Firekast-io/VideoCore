@@ -10,6 +10,8 @@
 
 #import <CoreAudio/CoreAudioTypes.h>
 
+#import <Accelerate/Accelerate.h>
+
 #include <videocore/rtmp/RTMPSession.h>
 #include <videocore/sources/ISource.hpp>
 #include <videocore/system/pixelBuffer/IPixelBuffer.hpp>
@@ -32,6 +34,7 @@
 #else
 #   include <videocore/mixers/GenericAudioMixer.h>
 #endif
+
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
@@ -493,9 +496,76 @@ static const int kMinVideoBitrate = 150000;
 }
 
 - (void) pushVideoSample:(CMSampleBufferRef) sampleBuffer
+                rotation:(VCRotateMode) r
 {
-    if (m_replaySource) {
+    if (!sampleBuffer || !CMSampleBufferDataIsReady(sampleBuffer) || !m_replaySource) return;
+
+    if (r == VCRotateMode0Degrees) {
         m_replaySource->bufferCaptured(CMSampleBufferGetImageBuffer(sampleBuffer));
+        return;
+    }
+
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+
+    if (!imageBuffer || CVPixelBufferLockBaseAddress(imageBuffer, 0) != kCVReturnSuccess) return;
+    
+    OSType pixelFormatType = CVPixelBufferGetPixelFormatType(imageBuffer);
+    NSAssert(pixelFormatType == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange, @"Code works only with NV12 format.");
+
+    size_t width  = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+
+    CVPixelBufferRef rotatedBuffer = NULL;
+    
+    NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,
+                                          (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{}};
+
+    BOOL rotatePerpendicular  = (r == VCRotateMode90Degrees) || (r == VCRotateMode270Degrees);
+    const size_t outWidth     = rotatePerpendicular ? height : width;
+    const size_t outHeight    = rotatePerpendicular ? width  : height;
+
+    CVPixelBufferCreate(kCFAllocatorDefault,
+                        outWidth,
+                        outHeight,
+                        pixelFormatType,
+                        (__bridge CFDictionaryRef)(pixelBufferOptions),
+                        &rotatedBuffer);
+    
+    if (rotatedBuffer && CVPixelBufferLockBaseAddress(rotatedBuffer, 0) == kCVReturnSuccess) {
+        void *srcLuma                = CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);
+        size_t srcLumaBytesPerRow    = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 0);
+        void *dstLuma                = CVPixelBufferGetBaseAddressOfPlane(rotatedBuffer, 0);
+        size_t dstLumaBytesPerRow    = CVPixelBufferGetBytesPerRowOfPlane(rotatedBuffer, 0);
+        
+        vImage_Buffer inbuff = {srcLuma, height, width, srcLumaBytesPerRow};
+        vImage_Buffer outbuff = {dstLuma, outHeight, outWidth, dstLumaBytesPerRow};
+        
+        vImage_Error err = vImageRotate90_Planar8(&inbuff, &outbuff, r, 0, 0);
+        if (err != kvImageNoError) {
+            NSLog(@"vImageRotate90_Planar8 error: %ld", err);
+        }
+
+        void *srcChroma              = CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 1);
+        size_t srcChromaBytesPerRow  = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, 1);
+        void *dstChroma              = CVPixelBufferGetBaseAddressOfPlane(rotatedBuffer, 1);
+        size_t dstChromaBytesPerRow  = CVPixelBufferGetBytesPerRowOfPlane(rotatedBuffer, 1);
+        
+        vImage_Buffer inbuff2 = {srcChroma, height/2, width/2, srcChromaBytesPerRow};
+        vImage_Buffer outbuff2 = {dstChroma, outHeight/2, outWidth/2, dstChromaBytesPerRow};
+        
+        vImage_Error err2 = vImageRotate90_Planar16U(&inbuff2, &outbuff2, r, 0, 0);
+        if (err2 != kvImageNoError) {
+            NSLog(@"vImageRotate90_Planar16U error: %ld", err2);
+        }
+
+        CVPixelBufferUnlockBaseAddress(rotatedBuffer, 0);
+    }
+
+    CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+
+    if (rotatedBuffer) {
+        m_replaySource->bufferCaptured(rotatedBuffer);
+        CVPixelBufferRelease(rotatedBuffer);
     }
 }
 
@@ -530,11 +600,12 @@ static const int kMinVideoBitrate = 150000;
         size_t size = audioBuffer.mDataByteSize;
         int numFrames = size / 2;
         
-//        if (!isMic) {
-//            NSLog(@"DUMP: audio size: %ld, chan: %d", size, audioBuffer.mNumberChannels);
-//            [self uploadAudio:data len:size];
-//        }
-
+#if VC_DEBUG_DUMP_AUDIO
+        if (!isMic) {
+            NSLog(@"DUMP: audio size: %ld, chan: %d", size, audioBuffer.mNumberChannels);
+            [self uploadAudio:data len:size];
+        }
+#endif
         if (isMic && m_micSource) {
             m_micSource->inputCallback(data, size, numFrames);
         }
@@ -551,6 +622,7 @@ static const int kMinVideoBitrate = 150000;
     CFRelease(blockBuffer);
 }
 
+#if VC_DEBUG_DUMP_AUDIO
 - (void) uploadAudio:(uint8_t*)pcm len:(size_t)length {
 
     NSData *data = [NSData dataWithBytes:pcm length:length];
@@ -570,5 +642,6 @@ static const int kMinVideoBitrate = 150000;
     
     [uploadTask resume];
 }
+#endif
 
 @end
