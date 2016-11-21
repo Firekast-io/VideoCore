@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
                             'filters/**/*.cpp', 'filters/**/*.h*' ]
 
   s.frameworks          = [ 'VideoToolbox', 'AudioToolbox', 'AVFoundation', 'CFNetwork', 'CoreMedia',
-                            'CoreVideo', 'OpenGLES', 'Foundation', 'CoreGraphics', 'Accelerate' ]
+                            'CoreVideo', 'OpenGLES', 'Foundation', 'CoreGraphics' ]
 
   s.libraries           = 'c++'
 

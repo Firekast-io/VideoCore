@@ -57,11 +57,12 @@
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
 
-    NSLog(@"processSampleBuffer:withType: %ld", (long)sampleBufferType);
+    if (sampleBufferType == RPSampleBufferTypeAudioApp)
+        NSLog(@"processSampleBuffer:withType: %ld", (long)sampleBufferType);
 
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:
-            [[SampleHandler sharedSession] pushVideoSample:sampleBuffer rotation:VCRotateMode90Degrees];
+            [[SampleHandler sharedSession] pushVideoSample:sampleBuffer];
             break;
         case RPSampleBufferTypeAudioApp:
             [[SampleHandler sharedSession] pushAudioSample:sampleBuffer Mic:NO];

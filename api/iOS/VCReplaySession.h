@@ -11,15 +11,6 @@
 #import <videocore/api/iOS/VCSimpleSession.h>
 
 
-typedef NS_ENUM(NSInteger, VCRotateMode)
-{
-    VCRotateMode0Degrees = 0,
-    VCRotateMode90Degrees = 1,
-    VCRotateMode180Degrees = 2,
-    VCRotateMode270Degrees = 3,
-};
-
-
 // VCReplaySessionDelegate ----------------------------------------------------
 
 @protocol VCReplaySessionDelegate <NSObject>
@@ -49,8 +40,7 @@ typedef NS_ENUM(NSInteger, VCRotateMode)
 
 - (void) endRtmpSession;
 
-- (void) pushVideoSample:(CMSampleBufferRef) sampleBuffer
-                rotation:(VCRotateMode) r;
+- (void) pushVideoSample:(CMSampleBufferRef) sampleBuffer;
 
 - (void) pushAudioSample:(CMSampleBufferRef) sampleBuffer
                      Mic:(bool) isMic;
