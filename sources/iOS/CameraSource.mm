@@ -403,14 +403,14 @@ namespace videocore { namespace iOS {
         
     }
     void
-    CameraSource::bufferCaptured(CVPixelBufferRef pixelBufferRef)
+    CameraSource::bufferCaptured(CVPixelBufferRef pixelBufferRef, int orientation)
     {
         auto output = m_output.lock();
         if(output) {
             
             VideoBufferMetadata md(1.f / float(m_fps));
             
-            md.setData(m_zIndex, m_matrix, false, shared_from_this());
+            md.setData(m_zIndex, m_matrix, false, orientation, shared_from_this());
             
             auto pixelBuffer = std::make_shared<Apple::PixelBuffer>(pixelBufferRef, true);
             

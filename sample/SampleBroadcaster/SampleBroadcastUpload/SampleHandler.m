@@ -61,7 +61,19 @@
 
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:
-            [[SampleHandler sharedSession] pushVideoSample:sampleBuffer];
+            if (sampleBuffer && CMSampleBufferDataIsReady(sampleBuffer)) {
+                CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+                if (!imageBuffer || CVPixelBufferLockBaseAddress(imageBuffer, 0) != kCVReturnSuccess) return;
+                size_t width  = CVPixelBufferGetWidth(imageBuffer);
+                size_t height = CVPixelBufferGetHeight(imageBuffer);
+                CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+
+                if (width > height) {
+                    [[SampleHandler sharedSession] pushVideoSample:sampleBuffer orientation:VCReplayOrientationCW270Degrees];
+                } else {
+                    [[SampleHandler sharedSession] pushVideoSample:sampleBuffer orientation:VCReplayOrientationCW0Degrees];
+                }
+            }
             break;
         case RPSampleBufferTypeAudioApp:
             [[SampleHandler sharedSession] pushAudioSample:sampleBuffer Mic:NO];

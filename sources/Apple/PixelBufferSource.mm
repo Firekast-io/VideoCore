@@ -72,7 +72,7 @@ namespace videocore { namespace Apple {
             
             glm::mat4 mat = glm::mat4(1.f);
             VideoBufferMetadata md(0.);
-            md.setData(4, mat, true, shared_from_this());
+            md.setData(4, mat, true, 0, shared_from_this());
             auto pixelBuffer = std::make_shared<Apple::PixelBuffer>((CVPixelBufferRef)m_pixelBuffer, false);
             outp->pushBuffer((const uint8_t*)&pixelBuffer, sizeof(pixelBuffer), md);
         }

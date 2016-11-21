@@ -40,13 +40,14 @@ namespace videocore
         kVideoMetadataMatrix, /*!< Specifies the transformation matrix to use. Pass an Identity matrix if no transformation is to be applied.
                                    Note that the compositor operates using homogeneous coordinates (-1 to 1) unless otherwise specified. */
         kVideoMetadataBlends,
+        kVideoMetadataOrientation, /*!< Specifies EXIF orientation */
         kVideoMetadataSource, /*!< Specifies a smart pointer to the source */
     };
     
     /*!
      *  Specifies the properties of the incoming image buffer.
      */
-    typedef MetaData<'vide', int, glm::mat4, bool, std::weak_ptr<ISource>> VideoBufferMetadata;
+    typedef MetaData<'vide', int, glm::mat4, bool, int, std::weak_ptr<ISource>> VideoBufferMetadata;
     
     /*! IAudioMixer interface.  Defines the required interface methods for Video mixers (compositors). */
     class IVideoMixer : public IMixer

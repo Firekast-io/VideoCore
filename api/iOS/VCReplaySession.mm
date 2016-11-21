@@ -19,8 +19,8 @@
 
 #ifdef __APPLE__
 #   include <videocore/mixers/Apple/AudioMixer.h>
-#   include <videocore/mixers/Apple/VideoMixer.h>
 #   ifdef TARGET_OS_IPHONE
+#       include <videocore/mixers/iOS/CIVideoMixer.h>
 #       include <videocore/sources/iOS/CameraSource.h>
 #       include <videocore/sources/iOS/MicSource.h>
 #       include <videocore/transforms/iOS/AACEncode.h>
@@ -426,7 +426,7 @@ static const int kMinVideoBitrate = 150000;
     
     {
         // Add video mixer
-        m_videoMixer = std::make_shared<videocore::Apple::VideoMixer>(self.videoSize.width,
+        m_videoMixer = std::make_shared<videocore::iOS::CIVideoMixer>(self.videoSize.width,
                                                                       self.videoSize.height,
                                                                       frameDuration);
     }
@@ -493,9 +493,10 @@ static const int kMinVideoBitrate = 150000;
 }
 
 - (void) pushVideoSample:(CMSampleBufferRef) sampleBuffer
+             orientation:(VCReplayOrientation) orient
 {
-    if (m_replaySource) {
-        m_replaySource->bufferCaptured(CMSampleBufferGetImageBuffer(sampleBuffer));
+    if (m_replaySource && sampleBuffer && CMSampleBufferDataIsReady(sampleBuffer)) {
+        m_replaySource->bufferCaptured(CMSampleBufferGetImageBuffer(sampleBuffer), orient);
     }
 }
 

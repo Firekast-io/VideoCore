@@ -275,7 +275,8 @@ namespace videocore { namespace iOS {
         VideoBufferMetadata &md = dynamic_cast<VideoBufferMetadata&>(metadata);
         const int zIndex = md.getData<kVideoMetadataZIndex>();
         
-        const glm::mat4 mat = md.getData<kVideoMetadataMatrix>();
+        glm::mat4 const& mat = md.getData<kVideoMetadataMatrix>();
+        const int orient = md.getData<kVideoMetadataOrientation>();
         
         if(zIndex < m_zRange.first) {
             m_zRange.first = zIndex;
@@ -299,6 +300,8 @@ namespace videocore { namespace iOS {
             this->m_layerMap[zIndex].push_back(h);
         }
         this->m_sourceMats[h] = mat;
+
+        this->m_sourceOrientations[h] = orient;
     }
 
     void
@@ -368,7 +371,7 @@ namespace videocore { namespace iOS {
                         for ( auto it = this->m_layerMap[i].begin() ; it != this->m_layerMap[i].end() ; ++ it) {
                             auto iip = this->m_sourceBuffers.find(*it);
                             if (iip == this->m_sourceBuffers.end() || !iip->second.currentBuffer()) continue;
-                            
+#if VC_FOR_OPENTOK_MIX
                             if (i == 1 || !ciImage) {
                                 ciImage = [CIImage imageWithCVPixelBuffer:iip->second.currentBuffer()->cvBuffer() options:ciOptions];
                                 ciImage = [ciImage imageByApplyingTransform:CGAffineTransformMakeTranslation(-56, 0)];
@@ -377,14 +380,34 @@ namespace videocore { namespace iOS {
                                 ciImage2 = [ciImage2 imageByApplyingTransform:CGAffineTransformMakeTranslation(10, 10)];
                                 ciImage = [ciImage2 imageByCompositingOverImage:ciImage];
                             }
-                            //mat = this->m_sourceMats[*it];
+#else
+                            CIImage *image = [CIImage imageWithCVPixelBuffer:iip->second.currentBuffer()->cvBuffer() options:ciOptions];
+                            
+                            glm::mat4 const& mat = this->m_sourceMats[*it];
+                            const int orient = this->m_sourceOrientations[*it];
+
+                            if (orient > 1) {
+                                image = [image imageByApplyingOrientation:orient];
+                            }
+
+                            CGFloat rs = m_frameW / image.extent.size.width;
+                            image = [image imageByApplyingTransform:CGAffineTransformMakeScale(rs, rs)];
+                            CGFloat ts = (m_frameH - image.extent.size.height) / 2;
+                            image = [image imageByApplyingTransform:CGAffineTransformMakeTranslation(0, ts)];
+
+                            if (!ciImage) {
+                                ciImage = image;
+                            } else {
+                                ciImage = [image imageByCompositingOverImage:ciImage];
+                            }
+#endif
                         }
                     }
 
                     if (ciImage) {
                         [mixContext render:ciImage
                            toCVPixelBuffer:this->m_pixelBuffer[current_fb]
-                                    bounds:CGRectMake(0, 0, 368, 640)
+                                    bounds:CGRectMake(0, 0, m_frameW, m_frameH)
                                 colorSpace:nil];
                     }
 

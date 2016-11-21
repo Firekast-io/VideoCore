@@ -425,7 +425,7 @@ namespace videocore { namespace iOS {
         VideoBufferMetadata & md = dynamic_cast<VideoBufferMetadata&>(metadata);
         const int zIndex = md.getData<kVideoMetadataZIndex>();
         
-        const glm::mat4 mat = md.getData<kVideoMetadataMatrix>();
+        glm::mat4 const& mat = md.getData<kVideoMetadataMatrix>();
         
         if(zIndex < m_zRange.first) {
             m_zRange.first = zIndex;

@@ -11,6 +11,15 @@
 #import <videocore/api/iOS/VCSimpleSession.h>
 
 
+typedef NS_ENUM(NSInteger, VCReplayOrientation)
+{
+    VCReplayOrientationCW0Degrees = 1,
+    VCReplayOrientationCW90Degrees = 6,
+    VCReplayOrientationCW180Degrees = 3,
+    VCReplayOrientationCW270Degrees = 8,
+};
+
+
 // VCReplaySessionDelegate ----------------------------------------------------
 
 @protocol VCReplaySessionDelegate <NSObject>
@@ -40,7 +49,8 @@
 
 - (void) endRtmpSession;
 
-- (void) pushVideoSample:(CMSampleBufferRef) sampleBuffer;
+- (void) pushVideoSample:(CMSampleBufferRef) sampleBuffer
+             orientation:(VCReplayOrientation) orient;
 
 - (void) pushAudioSample:(CMSampleBufferRef) sampleBuffer
                      Mic:(bool) isMic;

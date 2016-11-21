@@ -172,6 +172,7 @@ namespace videocore { namespace iOS {
         std::map<int, std::vector< std::size_t >> m_layerMap;
         
         std::map< std::size_t, glm::mat4 >               m_sourceMats;
+        std::map< std::size_t, int >                     m_sourceOrientations;
         std::unordered_map<std::size_t, IVideoFilter*>   m_sourceFilters;
         std::unordered_map<std::size_t, CISourceBuffer>  m_sourceBuffers;
         
