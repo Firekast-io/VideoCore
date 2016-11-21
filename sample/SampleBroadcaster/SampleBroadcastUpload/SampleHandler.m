@@ -57,8 +57,7 @@
 
 - (void)processSampleBuffer:(CMSampleBufferRef)sampleBuffer withType:(RPSampleBufferType)sampleBufferType {
 
-    if (sampleBufferType == RPSampleBufferTypeAudioApp)
-        NSLog(@"processSampleBuffer:withType: %ld", (long)sampleBufferType);
+    NSLog(@"processSampleBuffer:withType: %ld", (long)sampleBufferType);
 
     switch (sampleBufferType) {
         case RPSampleBufferTypeVideo:

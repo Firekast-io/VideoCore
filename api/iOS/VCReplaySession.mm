@@ -523,18 +523,19 @@ static const int kMinVideoBitrate = 150000;
     }
     
     videocore::AudioBufferMetadata md (0.);
-
+    
     for (int i = 0; i < audioBufferList.mNumberBuffers; i++) {
         AudioBuffer audioBuffer = audioBufferList.mBuffers[i];
         uint8_t *data = (uint8_t*)audioBuffer.mData;
         size_t size = audioBuffer.mDataByteSize;
         int numFrames = size / 2;
         
-//        if (!isMic) {
-//            NSLog(@"DUMP: audio size: %ld, chan: %d", size, audioBuffer.mNumberChannels);
-//            [self uploadAudio:data len:size];
-//        }
-
+#if VC_DEBUG_DUMP_AUDIO
+        if (!isMic) {
+            NSLog(@"DUMP: audio size: %ld, chan: %d", size, audioBuffer.mNumberChannels);
+            [self uploadAudio:data len:size];
+        }
+#endif
         if (isMic && m_micSource) {
             m_micSource->inputCallback(data, size, numFrames);
         }
@@ -551,6 +552,7 @@ static const int kMinVideoBitrate = 150000;
     CFRelease(blockBuffer);
 }
 
+#if VC_DEBUG_DUMP_AUDIO
 - (void) uploadAudio:(uint8_t*)pcm len:(size_t)length {
 
     NSData *data = [NSData dataWithBytes:pcm length:length];
@@ -570,5 +572,6 @@ static const int kMinVideoBitrate = 150000;
     
     [uploadTask resume];
 }
+#endif
 
 @end
