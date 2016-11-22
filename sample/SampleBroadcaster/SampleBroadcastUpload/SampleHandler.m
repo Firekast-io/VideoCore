@@ -63,10 +63,9 @@
         case RPSampleBufferTypeVideo:
             if (sampleBuffer && CMSampleBufferDataIsReady(sampleBuffer)) {
                 CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-                if (!imageBuffer || CVPixelBufferLockBaseAddress(imageBuffer, 0) != kCVReturnSuccess) return;
+                if (!imageBuffer) return;
                 size_t width  = CVPixelBufferGetWidth(imageBuffer);
                 size_t height = CVPixelBufferGetHeight(imageBuffer);
-                CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
 
                 if (width > height) {
                     [[SampleHandler sharedSession] pushVideoSample:sampleBuffer orientation:VCReplayOrientationCW90Degrees];
