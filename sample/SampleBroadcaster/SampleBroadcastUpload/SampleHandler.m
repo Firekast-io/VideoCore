@@ -69,7 +69,7 @@
                 CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
 
                 if (width > height) {
-                    [[SampleHandler sharedSession] pushVideoSample:sampleBuffer orientation:VCReplayOrientationCW270Degrees];
+                    [[SampleHandler sharedSession] pushVideoSample:sampleBuffer orientation:VCReplayOrientationCW90Degrees];
                 } else {
                     [[SampleHandler sharedSession] pushVideoSample:sampleBuffer orientation:VCReplayOrientationCW0Degrees];
                 }
