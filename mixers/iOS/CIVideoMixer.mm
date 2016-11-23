@@ -289,7 +289,7 @@ namespace videocore { namespace iOS {
         
         const auto h = hash(source);
         
-        
+        std::unique_lock<std::mutex> l(m_mutex);
         auto inPixelBuffer = *(Apple::PixelBufferRef*)data ;
 
         m_sourceBuffers[h].setBuffer(inPixelBuffer);
@@ -349,7 +349,6 @@ namespace videocore { namespace iOS {
                 const auto now = std::chrono::steady_clock::now();
 
                 auto currentTime = m_nextMixTime;
-
                 if (now < m_nextMixTime) goto wait;
                 
                 if (!m_shouldSync) {
@@ -365,6 +364,8 @@ namespace videocore { namespace iOS {
                 m_mixing = true;
                 
                 PERF_CI_async({
+                    std::unique_lock<std::mutex> l(m_mutex);
+
                     CIImage *ciImage = nil;
 
                     for ( int i = m_zRange.first ; i <= m_zRange.second ; ++i) {
@@ -410,6 +411,7 @@ namespace videocore { namespace iOS {
                                     bounds:CGRectMake(0, 0, m_frameW, m_frameH)
                                 colorSpace:nil];
                     }
+                    l.unlock();
 
                     auto lout = this->m_output.lock();
                     if (lout) {

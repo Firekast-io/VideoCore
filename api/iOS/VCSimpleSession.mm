@@ -471,7 +471,7 @@ namespace videocore { namespace simpleApi {
     self.micGain = 1.f;
     self.audioChannelCount = 2;
     self.audioSampleRate = 44100.;
-    self.useAdaptiveBitrate = NO;
+    self.useAdaptiveBitrate = YES;
     self.aspectMode = aspectMode;
 
     _previewView = [[VCPreviewView alloc] init];
@@ -650,8 +650,9 @@ namespace videocore { namespace simpleApi {
 
     m_outputSession.reset();
 
-    _bitrate = _bpsCeiling;
-
+    if ( self.useAdaptiveBitrate ) {
+        _bitrate = _bpsCeiling;
+    }
     self.rtmpSessionState = VCSessionStateEnded;
 }
 - (void) getCameraPreviewLayer:(AVCaptureVideoPreviewLayer **)previewLayer {

@@ -123,7 +123,10 @@ namespace videocore {
         };
 
         void start();
-        
+
+    public:
+        void mixPaused(bool paused);
+
     protected:
 
         /*!
@@ -176,7 +179,8 @@ namespace videocore {
         int m_bytesPerSample;
 
         std::atomic<bool> m_exiting;
-        
+        std::atomic<bool> m_paused;
+
         bool m_catchingUp;
 
     };

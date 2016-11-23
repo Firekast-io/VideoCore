@@ -103,6 +103,7 @@ namespace videocore {
     m_outBitsPerChannel(16),
     m_exiting(false),
     m_mixQueue("com.videocore.audiomix", kJobQueuePriorityHigh),
+    m_paused(false),
     m_outgoingWindow(nullptr),
     m_catchingUp(false),
     m_epoch(std::chrono::steady_clock::now())
@@ -176,6 +177,8 @@ namespace videocore {
         AudioBufferMetadata & inMeta = static_cast<AudioBufferMetadata&>(metadata);
         
         if(inMeta.size() >= 5) {
+            std::unique_lock<std::mutex> l(m_mixMutex);
+
             const auto inSource = inMeta.getData<kAudioMetadataSource>() ;
             const auto cMixTime = std::chrono::steady_clock::now();
             MixWindow* currentWindow = m_currentWindow;
@@ -191,6 +194,8 @@ namespace videocore {
                 }
                 
                 m_mixQueue.enqueue([=]() {
+                    std::unique_lock<std::mutex> l(m_mixMutex);
+
                     auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
 
                     auto mixTime = cMixTime - std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
@@ -424,26 +429,36 @@ namespace videocore {
                 
                 m_nextMixTime = currentWindow->start;
                 
-                AudioBufferMetadata md ( std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - m_epoch).count() );
-                std::shared_ptr<videocore::ISource> blank;
+                if (m_paused.load()) {
+                    m_outgoingWindow = nullptr;
+
+                } else {
+                    AudioBufferMetadata md ( std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - m_epoch).count() );
+                    std::shared_ptr<videocore::ISource> blank;
                     
-                md.setData(m_outFrequencyInHz, m_outBitsPerChannel, m_outChannelCount, 0, 0, (int)currentWindow->size, false, false, blank);
-                auto out = m_output.lock();
-                
-                if(out && m_outgoingWindow) {
-                    out->pushBuffer(m_outgoingWindow->buffer, m_outgoingWindow->size, md);
-                    m_outgoingWindow->clear();
+                    md.setData(m_outFrequencyInHz, m_outBitsPerChannel, m_outChannelCount, 0, 0, (int)currentWindow->size, false, false, blank);
+                    auto out = m_output.lock();
+                    
+                    if(out && m_outgoingWindow) {
+                        out->pushBuffer(m_outgoingWindow->buffer, m_outgoingWindow->size, md);
+                        m_outgoingWindow->clear();
+                    }
+                    m_outgoingWindow = currentWindow;
                 }
-                m_outgoingWindow = currentWindow;
                
                 m_currentWindow = nextWindow;
-                
             }
             if(!m_exiting.load()) {
                 m_mixThreadCond.wait_until(l, m_nextMixTime + us_buf_duration);
             }
         }
         DLog("Exiting audio mixer...\n");
+    }
+
+    void
+    GenericAudioMixer::mixPaused(bool paused)
+    {
+        m_paused = paused;
     }
     void
     GenericAudioMixer::deinterleaveDefloat(float *inBuff,
