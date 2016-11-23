@@ -34,17 +34,27 @@
     NSLog(@"broadcastStartedWithSetupInfo");
 
     NSLog(@"Starting RTMP session");
-    [[SampleHandler sharedSession] startRtmpSessionWithURL:@"rtmp://192.168.1.1" andStreamKey:@"test"];
+    VCReplaySession *session = [SampleHandler sharedSession];
+
+    if (session.rtmpSessionState == VCSessionStateNone) {
+        [session startRtmpSessionWithURL:@"rtmp://192.168.1.1" andStreamKey:@"test"];
+    }
 }
 
 - (void)broadcastPaused {
     // User has requested to pause the broadcast. Samples will stop being delivered.
     NSLog(@"broadcastPaused");
+    
+    NSLog(@"Pause RTMP session");
+    [[SampleHandler sharedSession] broadcastPaused];
 }
 
 - (void)broadcastResumed {
     // User has requested to resume the broadcast. Samples delivery will resume.
     NSLog(@"broadcastResumed");
+
+    NSLog(@"Resume RTMP session");
+    [[SampleHandler sharedSession] broadcastResumed];
 }
 
 - (void)broadcastFinished {

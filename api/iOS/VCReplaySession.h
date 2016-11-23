@@ -38,6 +38,8 @@ typedef NS_ENUM(NSInteger, VCReplayOrientation)
 
 @interface VCReplaySession : NSObject
 
+@property (nonatomic, readonly) VCSessionState rtmpSessionState;
+
 @property (nonatomic, assign) id<VCReplaySessionDelegate> delegate;
 
 - (instancetype) initWithVideoSize:(CGSize)videoSize
@@ -54,5 +56,9 @@ typedef NS_ENUM(NSInteger, VCReplayOrientation)
 
 - (void) pushAudioSample:(CMSampleBufferRef) sampleBuffer
                      Mic:(bool) isMic;
+
+- (void) broadcastPaused;
+
+- (void) broadcastResumed;
 
 @end

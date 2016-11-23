@@ -233,7 +233,7 @@ static const int kMinVideoBitrate = 150000;
     self.micGain = 1.f;
     self.audioChannelCount = 1;
     self.audioSampleRate = 44100.;
-    self.useAdaptiveBitrate = NO;
+    self.useAdaptiveBitrate = YES;
 
     _graphManagementQueue = dispatch_queue_create("com.videocore.replay.graph", 0);
     
@@ -393,8 +393,9 @@ static const int kMinVideoBitrate = 150000;
     
     m_outputSession.reset();
     
-    _bitrate = _bpsCeiling;
-    
+    if ( self.useAdaptiveBitrate ) {
+        _bitrate = _bpsCeiling;
+    }
     self.rtmpSessionState = VCSessionStateEnded;
 }
 
@@ -495,6 +496,8 @@ static const int kMinVideoBitrate = 150000;
 - (void) pushVideoSample:(CMSampleBufferRef) sampleBuffer
              orientation:(VCReplayOrientation) orient
 {
+    if (self.rtmpSessionState != VCSessionStateStarted) return;
+
     if (m_replaySource && sampleBuffer && CMSampleBufferDataIsReady(sampleBuffer)) {
         m_replaySource->bufferCaptured(CMSampleBufferGetImageBuffer(sampleBuffer), orient);
     }
@@ -503,10 +506,11 @@ static const int kMinVideoBitrate = 150000;
 - (void) pushAudioSample:(CMSampleBufferRef) sampleBuffer
                      Mic:(bool) isMic
 {
+    if (self.rtmpSessionState != VCSessionStateStarted) return;
+
     if (!sampleBuffer || !CMSampleBufferDataIsReady(sampleBuffer)) return;
     
     AudioBufferList audioBufferList;
-
     CMBlockBufferRef blockBuffer;
     
     OSStatus rc = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sampleBuffer,
@@ -551,6 +555,24 @@ static const int kMinVideoBitrate = 150000;
     //Release the buffer when done with the samples
     //(retained by CMSampleBufferGetAudioBufferListWithRetainedblockBuffer)
     CFRelease(blockBuffer);
+}
+
+- (void) broadcastPaused {
+    if (self.rtmpSessionState == VCSessionStateNone) return;
+    
+    auto audioMixer = std::dynamic_pointer_cast<videocore::Apple::AudioMixer>(m_audioMixer);
+    auto videoMixer = std::dynamic_pointer_cast<videocore::iOS::CIVideoMixer>(m_videoMixer);
+    audioMixer->mixPaused(true);
+    videoMixer->mixPaused(true);
+}
+
+- (void) broadcastResumed {
+    if (self.rtmpSessionState == VCSessionStateNone) return;
+    
+    auto audioMixer = std::dynamic_pointer_cast<videocore::Apple::AudioMixer>(m_audioMixer);
+    auto videoMixer = std::dynamic_pointer_cast<videocore::iOS::CIVideoMixer>(m_videoMixer);
+    audioMixer->mixPaused(false);
+    videoMixer->mixPaused(false);
 }
 
 #if VC_DEBUG_DUMP_AUDIO
