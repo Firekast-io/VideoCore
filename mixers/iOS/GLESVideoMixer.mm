@@ -438,7 +438,7 @@ namespace videocore { namespace iOS {
         
         const auto h = hash(source);
         
-        
+        std::unique_lock<std::mutex> l(m_mutex);
         auto inPixelBuffer = *(Apple::PixelBufferRef*)data ;
 
         m_sourceBuffers[h].setBuffer(inPixelBuffer, this->m_textureCache, m_glJobQueue, m_glesCtx);

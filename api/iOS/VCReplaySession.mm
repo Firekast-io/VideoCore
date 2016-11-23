@@ -246,7 +246,7 @@ static const int kMinVideoBitrate = 150000;
 
 - (void) dealloc
 {
-    [self endRtmpSession];
+    [self endRtmpSessionInternal];
     m_videoMixer.reset();
     m_audioMixer.reset();
     m_replaySource.reset();
@@ -296,12 +296,12 @@ static const int kMinVideoBitrate = 150000;
 
                                                              case kClientStateError:
                                                                  self.rtmpSessionState = VCSessionStateError;
-                                                                 [self endRtmpSession];
+                                                                 [self endRtmpSessionInternal];
                                                                  break;
                                                                  
                                                              case kClientStateNotConnected:
                                                                  self.rtmpSessionState = VCSessionStateEnded;
-                                                                 [self endRtmpSession];
+                                                                 [self endRtmpSessionInternal];
                                                                  break;
                                                                  
                                                              default:
@@ -382,6 +382,15 @@ static const int kMinVideoBitrate = 150000;
 }
 
 - (void) endRtmpSession
+{
+    __block VCReplaySession* bSelf = self;
+    
+    dispatch_sync(_graphManagementQueue, ^{
+        [bSelf endRtmpSessionInternal];
+    });
+}
+
+- (void) endRtmpSessionInternal
 {
     m_videoMixer->setOutput(nullptr);
     m_audioMixer->setOutput(nullptr);

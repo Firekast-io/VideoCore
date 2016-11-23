@@ -177,6 +177,8 @@ namespace videocore {
         AudioBufferMetadata & inMeta = static_cast<AudioBufferMetadata&>(metadata);
         
         if(inMeta.size() >= 5) {
+            std::unique_lock<std::mutex> l(m_mixMutex);
+
             const auto inSource = inMeta.getData<kAudioMetadataSource>() ;
             const auto cMixTime = std::chrono::steady_clock::now();
             MixWindow* currentWindow = m_currentWindow;
@@ -192,6 +194,8 @@ namespace videocore {
                 }
                 
                 m_mixQueue.enqueue([=]() {
+                    std::unique_lock<std::mutex> l(m_mixMutex);
+
                     auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
 
                     auto mixTime = cMixTime - std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
