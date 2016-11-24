@@ -140,6 +140,7 @@ namespace videocore { namespace iOS {
                 [(id)m_assetWriters[wid] startSessionAtSourceTime:time];
             } @catch (NSException* e) {
                 teardownWriter(wid);
+                return false;
             }
         }
         return true;
@@ -324,7 +325,8 @@ namespace videocore { namespace iOS {
             presentationTime.value = m_frameCount;
             presentationTime.flags = kCMTimeFlags_Valid;
             
-            if(!m_assetWriters[m_currentWriter] || !m_pixelBuffers[m_currentWriter] || [(id)m_assetWriters[m_currentWriter] status] != 1) {
+            if(!m_assetWriters[m_currentWriter] || !m_pixelBuffers[m_currentWriter] || [(id)m_assetWriters[m_currentWriter] status] != AVAssetWriterStatusWriting) {
+                m_queue.enqueue_sync([]{});
                 swapWriters(true);
                 return ;
             }
@@ -337,8 +339,14 @@ namespace videocore { namespace iOS {
             }
             
             CVPixelBufferLockBaseAddress(pb, kCVPixelBufferLock_ReadOnly);
-            [(id)m_pixelBuffers[m_currentWriter] appendPixelBuffer:pb withPresentationTime:presentationTime];
-            CVPixelBufferUnlockBaseAddress(pb, kCVPixelBufferLock_ReadOnly);
+            @try {
+                [adaptor appendPixelBuffer:pb withPresentationTime:presentationTime];
+            } @catch (NSException* e) {
+                NSLog(@"%@", e);
+                return;
+            } @finally {
+                CVPixelBufferUnlockBaseAddress(pb, kCVPixelBufferLock_ReadOnly);
+            }
             
             
             // Open the file the h.264 data is being written to.
@@ -407,8 +415,10 @@ namespace videocore { namespace iOS {
     H264Encode::setBitrate(int bitrate)
     {
         m_bitrate = bitrate;
-        teardownWriter(!m_currentWriter);
-        setupWriter(!m_currentWriter);
+        m_queue.enqueue_sync([=](){
+            teardownWriter(!m_currentWriter);
+            setupWriter(!m_currentWriter);
+        });
         swapWriters(true);
     }
 }
