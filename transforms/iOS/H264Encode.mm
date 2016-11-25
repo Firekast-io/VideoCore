@@ -325,6 +325,8 @@ namespace videocore { namespace iOS {
             presentationTime.value = m_frameCount;
             presentationTime.flags = kCMTimeFlags_Valid;
             
+            std::unique_lock<std::mutex> l(m_encodeMutex);
+
             if(!m_assetWriters[m_currentWriter] || !m_pixelBuffers[m_currentWriter] || [(id)m_assetWriters[m_currentWriter] status] != AVAssetWriterStatusWriting) {
                 m_queue.enqueue_sync([]{});
                 swapWriters(true);
@@ -343,6 +345,8 @@ namespace videocore { namespace iOS {
                 [adaptor appendPixelBuffer:pb withPresentationTime:presentationTime];
             } @catch (NSException* e) {
                 NSLog(@"%@", e);
+                m_queue.enqueue_sync([]{});
+                swapWriters(true);
                 return;
             } @finally {
                 CVPixelBufferUnlockBaseAddress(pb, kCVPixelBufferLock_ReadOnly);
@@ -410,16 +414,19 @@ namespace videocore { namespace iOS {
         }
         
     }
-    
     void
     H264Encode::setBitrate(int bitrate)
     {
-        m_bitrate = bitrate;
-        m_queue.enqueue_sync([=](){
-            teardownWriter(!m_currentWriter);
-            setupWriter(!m_currentWriter);
-        });
-        swapWriters(true);
+        if(m_bitrate != bitrate) {
+            std::unique_lock<std::mutex> l(m_encodeMutex);
+            m_bitrate = bitrate;
+
+            m_queue.enqueue_sync([=] {
+                this->teardownWriter(!m_currentWriter);
+                this->setupWriter(!m_currentWriter);
+            });
+            swapWriters(true);
+        }
     }
 }
 }
