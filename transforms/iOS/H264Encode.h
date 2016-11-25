@@ -77,8 +77,9 @@ namespace videocore { namespace iOS {
         
         std::deque<std::unique_ptr<Buffer>>     m_frameQueue;
         
+        std::mutex             m_encodeMutex;
         JobQueue               m_queue;
-        
+
         std::string            m_tmpFile[2];
         
         std::weak_ptr<IOutput> m_output;
