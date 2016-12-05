@@ -19,6 +19,7 @@
 
 #ifdef __APPLE__
 #   include <videocore/mixers/Apple/AudioMixer.h>
+#   include <videocore/mixers/Apple/VideoMixer.h>
 #   ifdef TARGET_OS_IPHONE
 #       include <videocore/mixers/iOS/CIVideoMixer.h>
 #       include <videocore/sources/iOS/CameraSource.h>

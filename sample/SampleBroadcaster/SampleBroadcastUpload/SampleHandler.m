@@ -11,6 +11,13 @@
 
 #import <videocore/api/iOS/VCReplaySession.h>
 
+@interface VCReplaySessionCallback : NSObject <VCReplaySessionDelegate>
+@end
+@implementation VCReplaySessionCallback
+- (void) connectionStatusChanged: (VCSessionState) sessionState {
+    NSLog(@"VCReplaySession status: %ld", sessionState);
+}
+@end
 
 //  To handle samples with a subclass of RPBroadcastSampleHandler set the following in the extension's Info.plist file:
 //  - RPBroadcastProcessMode should be set to RPBroadcastProcessModeSampleBuffer
@@ -21,10 +28,12 @@
 + (id) sharedSession
 {
     static VCReplaySession *sharedSession = nil;
+    static VCReplaySessionCallback *callback = nil;
     static dispatch_once_t onceToken;
     
     dispatch_once(&onceToken, ^{
         sharedSession = [[VCReplaySession alloc] initWithVideoSize:CGSizeMake(368, 640) frameRate:20 bitrate:650000];
+        sharedSession.delegate = callback = [[VCReplaySessionCallback alloc] init];
     });
     return sharedSession;
 }

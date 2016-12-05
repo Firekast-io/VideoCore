@@ -114,7 +114,7 @@ namespace videocore { namespace Apple {
         CVPixelBufferRef blankPixelBufferRef = NULL;
 
         NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,
-                                              (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{}};
+                                              (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{} };
 
         CVPixelBufferCreate(kCFAllocatorDefault, m_frameW, m_frameH, kCVPixelFormatType_32BGRA, (CFDictionaryRef)pixelBufferOptions, &blankPixelBufferRef);
 
