@@ -301,11 +301,8 @@ namespace videocore { namespace iOS {
         @autoreleasepool {
             
             if(!m_pixelBufferPool) {
-                NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
-                                                      (NSString*) kCVPixelBufferWidthKey : @(m_frameW),
-                                                      (NSString*) kCVPixelBufferHeightKey : @(m_frameH),
-                                                      (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,
-                                                      (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{}};
+                NSDictionary* pixelBufferOptions = @{ (NSString*) kCVPixelBufferOpenGLESCompatibilityKey : @YES,
+                                                      (NSString*) kCVPixelBufferIOSurfacePropertiesKey : @{} };
                 
                 CVPixelBufferCreate(kCFAllocatorDefault, m_frameW, m_frameH, kCVPixelFormatType_32BGRA, (CFDictionaryRef)pixelBufferOptions, &m_pixelBuffer[0]);
                 CVPixelBufferCreate(kCFAllocatorDefault, m_frameW, m_frameH, kCVPixelFormatType_32BGRA, (CFDictionaryRef)pixelBufferOptions, &m_pixelBuffer[1]);
