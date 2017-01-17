@@ -26,8 +26,8 @@
 #define __videocore__RTMSession__
 
 #include <iostream>
-#include <videocore/stream/IStreamSession.hpp>
-#include <videocore/stream/TCPThroughputAdaptation.h>
+#include "videocore/stream/IStreamSession.hpp"
+#include "videocore/stream/TCPThroughputAdaptation.h"
 
 #include <UriParser/UriParser.hpp>
 
@@ -37,12 +37,12 @@
 #include <map>
 #include <chrono>
 
-#include <videocore/system/JobQueue.hpp>
+#include "videocore/system/JobQueue.hpp"
 #include <cstdlib>
 
-#include <videocore/rtmp/RTMPTypes.h>
-#include <videocore/system/Buffer.hpp>
-#include <videocore/transforms/IOutputSession.hpp>
+#include "videocore/rtmp/RTMPTypes.h"
+#include "videocore/system/Buffer.hpp"
+#include "videocore/transforms/IOutputSession.hpp"
 
 namespace videocore
 {

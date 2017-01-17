@@ -1,4 +1,4 @@
-#include <videocore/system/pixelBuffer/GenericPixelBuffer.h>
+#include "videocore/system/pixelBuffer/GenericPixelBuffer.h"
 
 namespace videocore {
 

@@ -23,7 +23,7 @@
  
  */
 
-#include <videocore/stream/TCPThroughputAdaptation.h>
+#include "videocore/stream/TCPThroughputAdaptation.h"
 #include <chrono>
 #include <cmath>
 #include <stdlib.h>

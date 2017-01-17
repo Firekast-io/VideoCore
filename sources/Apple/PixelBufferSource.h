@@ -23,8 +23,8 @@
 #define __videocore__PixelBufferSource__
 
 #include <iostream>
-#include <videocore/sources/ISource.hpp>
-#include <videocore/transforms/IOutput.hpp>
+#include "videocore/sources/ISource.hpp"
+#include "videocore/transforms/IOutput.hpp"
 
 #ifdef __APPLE__
 #   include <MacTypes.h>

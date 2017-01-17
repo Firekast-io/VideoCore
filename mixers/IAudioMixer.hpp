@@ -25,9 +25,9 @@
 #ifndef videocore_IAudioMixer_hpp
 #define videocore_IAudioMixer_hpp
 
-#include <videocore/system/Buffer.hpp>
-#include <videocore/mixers/IMixer.hpp>
-#include <videocore/transforms/IMetadata.hpp>
+#include "videocore/system/Buffer.hpp"
+#include "videocore/mixers/IMixer.hpp"
+#include "videocore/transforms/IMetadata.hpp"
 
 namespace videocore {
 

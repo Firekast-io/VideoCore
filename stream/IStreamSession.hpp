@@ -29,7 +29,7 @@
 #include <functional>
 #include <string>
 
-#include <videocore/system/util.h>
+#include "videocore/system/util.h"
 
 namespace videocore {
     

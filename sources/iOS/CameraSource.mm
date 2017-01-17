@@ -23,9 +23,9 @@
  
  */
 
-#include <videocore/sources/iOS/CameraSource.h>
-#include <videocore/mixers/IVideoMixer.hpp>
-#include <videocore/system/pixelBuffer/Apple/PixelBuffer.h>
+#include "videocore/sources/iOS/CameraSource.h"
+#include "videocore/mixers/IVideoMixer.hpp"
+#include "videocore/system/pixelBuffer/Apple/PixelBuffer.h"
 
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>

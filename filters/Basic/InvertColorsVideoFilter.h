@@ -24,7 +24,7 @@
  */
 #ifndef videocore_InvertColorsVideoFilter_h
 #define videocore_InvertColorsVideoFilter_h
-#include <videocore/filters/IVideoFilter.hpp>
+#include "videocore/filters/IVideoFilter.hpp"
 
 namespace videocore {
     namespace filters {

@@ -2,7 +2,7 @@
 #ifndef __mobcrush__BasicVideoFilterBGRAinYUVAout__
 #define __mobcrush__BasicVideoFilterBGRAinYUVAout__
 
-#include <videocore/filters/IVideoFilter.hpp>
+#include "videocore/filters/IVideoFilter.hpp"
 
 namespace videocore {
     namespace filters {

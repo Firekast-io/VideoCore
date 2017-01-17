@@ -34,9 +34,9 @@
 #define __videocore__AACEncode__
 
 #include <iostream>
-#include <videocore/transforms/IEncoder.hpp>
+#include "videocore/transforms/IEncoder.hpp"
 #include <AudioToolbox/AudioToolbox.h>
-#include <videocore/system/Buffer.hpp>
+#include "videocore/system/Buffer.hpp"
 
 namespace videocore { namespace iOS {
 

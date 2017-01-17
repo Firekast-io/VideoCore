@@ -27,7 +27,7 @@
 #define __videocore__AACPacketizer__
 
 #include <iostream>
-#include <videocore/transforms/ITransform.hpp>
+#include "videocore/transforms/ITransform.hpp"
 #include <Vector>
 
 namespace videocore { namespace rtmp {

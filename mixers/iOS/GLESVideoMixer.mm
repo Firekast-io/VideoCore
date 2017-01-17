@@ -24,9 +24,9 @@
  */
 
 
-#include <videocore/mixers/iOS/GLESVideoMixer.h>
-#include <videocore/sources/iOS/GLESUtil.h>
-#include <videocore/filters/FilterFactory.h>
+#include "videocore/mixers/iOS/GLESVideoMixer.h"
+#include "videocore/sources/iOS/GLESUtil.h"
+#include "videocore/filters/FilterFactory.h"
 
 #import <Foundation/Foundation.h>
 #import <OpenGLES/EAGL.h>

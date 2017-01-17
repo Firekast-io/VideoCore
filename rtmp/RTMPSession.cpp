@@ -22,10 +22,10 @@
  THE SOFTWARE.
  
  */
-#include <videocore/rtmp/RTMPSession.h>
+#include "videocore/rtmp/RTMPSession.h"
 
 #ifdef __APPLE__
-#include <videocore/stream/Apple/StreamSession.h>
+#include "videocore/stream/Apple/StreamSession.h"
 #endif
 
 #include <boost/tokenizer.hpp>

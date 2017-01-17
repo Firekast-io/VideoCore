@@ -24,9 +24,9 @@
  */
 
 
-#include <videocore/transforms/PositionTransform.h>
+#include "videocore/transforms/PositionTransform.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include <videocore/mixers/IVideoMixer.hpp>
+#include "videocore/mixers/IVideoMixer.hpp"
 namespace videocore {
     
     PositionTransform::PositionTransform(int x,
