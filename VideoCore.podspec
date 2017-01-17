@@ -25,6 +25,7 @@ Pod::Spec.new do |s|
                             'transforms/**/*.h*', 'transforms/**/*.cpp', 'transforms/**/*.m*',
                             'api/**/*.h*', 'api/**/*.m*',
                             'filters/**/*.cpp', 'filters/**/*.h*' ]
+  s.public_header_files = 'api/**/*.h'
 
   s.frameworks          = [ 'VideoToolbox', 'AudioToolbox', 'AVFoundation', 'CFNetwork', 'CoreMedia',
                             'CoreVideo', 'OpenGLES', 'Foundation', 'CoreGraphics' ]
