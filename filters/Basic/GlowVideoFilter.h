@@ -22,14 +22,42 @@
  THE SOFTWARE.
  
  */
+#ifndef videocore_GlowVideoFilter_h
+#define videocore_GlowVideoFilter_h
+#include "videocore/filters/IVideoFilter.hpp"
 
-#ifndef __videocore_util_h
-#define __videocore_util_h
+namespace videocore {
+    namespace filters {
+        class GlowVideoFilter : public IVideoFilter {
+            
+        public:
+            GlowVideoFilter();
+            ~GlowVideoFilter();
+        
+        public:
+            virtual void initialize();
+            virtual bool initialized() const { return m_initialized; };
+            virtual std::string const name() { return "com.videocore.filters.glow"; };
+            virtual void bind();
+            virtual void unbind();
+            
+        public:
+            
+            const char * const vertexKernel() const ;
+            const char * const pixelKernel() const ;
+            
+        private:
+            static bool registerFilter();
+            static bool s_registered;
+        private:
 
-#ifdef DEBUG
-#define DLog(...) printf(__VA_ARGS__);
-#else
-#define DLog(...) {}
-#endif
+            unsigned int m_vao;
+            unsigned int m_uMatrix;
+            bool m_initialized;
+            bool m_bound;
+            
+        };
+    }
+}
 
-#endif
+#endif /* defined(videocore_GlowVideoFilter_h) */

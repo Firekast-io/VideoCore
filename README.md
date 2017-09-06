@@ -1,9 +1,8 @@
 
 
 #VideoCore
-_&copy; 2013-2014 James G Hurley_
 
-VideoCore is a project inteded to be an audio and video manipulation and streaming graph.  It currently works with iOS and periodic (live) sources.  It is a work in progress and will eventually expand to other platforms such as OS X and Android.  **Contributors welcome!** [![Stories in Ready](https://badge.waffle.io/jgh-/VideoCore.png?label=ready&title=Ready)](https://waffle.io/jgh-/VideoCore)
+VideoCore is a project inteded to be an audio and video manipulation and streaming graph.  It currently works with iOS and periodic (live) sources.  It is a work in progress and will eventually expand to other platforms such as OS X and Android.  **Contributors welcome!** 
 
 ###Table of Contents
 * [Setup](#setup)
@@ -37,15 +36,6 @@ open SampleBroadcaster.xcworkspace
 xcodebuild -workspace SampleBroadcaster.xcworkspace -scheme SampleBroadcaster build
 ```
 More on CocoaPods: http://cocoapods.org/
-
-##Projects Using VideoCore
-
-Looking for someone to help you with your video streaming project? Feel free to contact jamesghurley@gmail.com
-
-* Cine.io (http://www.cine.io)
-
-_If you would like to be included in this list, either make a pull request or contact jamesghurley@gmail.com_
-
 
 ##Architecture Overview
 
