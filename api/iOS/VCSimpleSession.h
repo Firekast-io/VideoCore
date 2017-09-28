@@ -76,7 +76,7 @@ typedef NS_ENUM(NSInteger, VCFilter) {
 - (void) didAddCameraSource:(VCSimpleSession*)session;
 
 - (void) detectedThroughput: (NSInteger) throughputInBytesPerSecond; //Depreciated, should use method below
-- (void) detectedThroughput: (NSInteger) throughputInBytesPerSecond videoRate:(NSInteger) rate;
+- (void) detectedThroughput: (NSInteger) predictedInBytesPerSecond videoBitrate:(NSInteger)videoBitrate audioBitrate:(NSInteger)audioBitrate detectedInBytesPerSecond:(NSInteger)detectedInBytesPerSecond vector:(NSInteger)vector bpsCeiling:(NSInteger)bpsCeiling;
 @end
 
 @interface VCSimpleSession : NSObject

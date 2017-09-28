@@ -589,8 +589,8 @@ namespace videocore { namespace simpleApi {
                                                   if ([bSelf.delegate respondsToSelector:@selector(detectedThroughput:)]) {
                                                       [bSelf.delegate detectedThroughput:predicted];
                                                   }
-                                                  if ([bSelf.delegate respondsToSelector:@selector(detectedThroughput:videoRate:)]) {
-                                                      [bSelf.delegate detectedThroughput:predicted videoRate:video->bitrate()];
+                                                  if ([bSelf.delegate respondsToSelector:@selector(detectedThroughput:videoBitrate:audioBitrate:detectedInBytesPerSecond:vector:bpsCeiling:)]) {
+                                                      [bSelf.delegate detectedThroughput:predicted videoBitrate:video->bitrate() audioBitrate:audio->bitrate() detectedInBytesPerSecond:inst vector:vector bpsCeiling:bSelf->_bpsCeiling];
                                                   }
 
 
