@@ -91,6 +91,7 @@ typedef NS_ENUM(NSInteger, VCFilter) {
 @property (nonatomic, assign, readonly) BOOL    useInterfaceOrientation;
 @property (nonatomic, assign) VCCameraState cameraState;
 @property (nonatomic, assign) BOOL          orientationLocked;
+@property (nonatomic, assign) BOOL          isTorchAvailable;
 @property (nonatomic, assign) BOOL          torch;
 @property (nonatomic, assign) float         videoZoomFactor;
 @property (nonatomic, assign) int           audioChannelCount;

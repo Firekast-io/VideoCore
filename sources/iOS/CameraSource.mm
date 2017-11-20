@@ -248,6 +248,22 @@ namespace videocore { namespace iOS {
         m_orientationLocked = orientationLocked;
     }
     bool
+    CameraSource::isTorchAvailable()
+    {
+        if(!m_captureSession) return false;
+        
+        AVCaptureSession* session = (AVCaptureSession*)m_captureSession;
+        
+        if (session.inputs.count > 0) {
+            AVCaptureDeviceInput* currentCameraInput = [session.inputs objectAtIndex:0];
+            
+            if(currentCameraInput.device.torchAvailable) {
+                return true;
+            }
+        }
+        return false;
+    }
+    bool
     CameraSource::setTorch(bool torchOn)
     {
         bool ret = false;

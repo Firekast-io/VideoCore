@@ -92,6 +92,13 @@ namespace videocore { namespace iOS {
         void setOrientationLocked(bool orientationLocked);
         
         /*!
+         * Check if torch is available for the current camera source.
+         *
+         * \return `true` if torch is the available
+         */
+        bool isTorchAvailable();
+        
+        /*!
          *  Attempt to turn the torch mode on or off.
          *
          *  \param torchOn  Bool indicating whether the torch should be on or off.

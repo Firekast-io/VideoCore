@@ -224,6 +224,13 @@ namespace videocore { namespace simpleApi {
         m_cameraSource->setOrientationLocked(orientationLocked);
     }
 }
+- (BOOL) isTorchAvailable
+{
+    if(m_cameraSource) {
+        return m_cameraSource->isTorchAvailable();
+    }
+    return NO;
+}
 - (BOOL) torch
 {
     return _torch;
