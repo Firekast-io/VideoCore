@@ -153,5 +153,6 @@ typedef NS_ENUM(NSInteger, VCFilter) {
 
 - (void) addPixelBufferSource: (UIImage*) image
                      withRect: (CGRect) rect;
+- (void) removeLastAddedPixelBufferSource;
 
 @end

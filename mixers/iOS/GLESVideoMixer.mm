@@ -381,6 +381,7 @@ namespace videocore { namespace iOS {
     GLESVideoMixer::unregisterSource(std::shared_ptr<ISource> source)
     {
         DLog("GLESVideoMixer::unregisterSource");
+        std::unique_lock<std::mutex> l(m_mutex);
         releaseBuffer(source);
         
         auto it = m_sources.begin();

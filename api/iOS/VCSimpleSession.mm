@@ -906,6 +906,9 @@ namespace videocore { namespace simpleApi {
     free(rawData);
     
 }
+- (void) removeLastAddedPixelBufferSource {
+    m_videoMixer->unregisterSource(m_pixelBufferSource);
+}
 - (NSString *) applicationDocumentsDirectory
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
