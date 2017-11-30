@@ -56,6 +56,7 @@
 
 
 #include <sstream>
+#include <map>
 
 
 static const int kMinVideoBitrate = 32000;
@@ -93,7 +94,7 @@ namespace videocore { namespace simpleApi {
     std::shared_ptr<videocore::simpleApi::PixelBufferOutput> m_pbOutput;
     std::shared_ptr<videocore::iOS::MicSource>               m_micSource;
     std::shared_ptr<videocore::iOS::CameraSource>            m_cameraSource;
-    std::shared_ptr<videocore::Apple::PixelBufferSource>     m_pixelBufferSource;
+    std::map<size_t, std::shared_ptr<videocore::Apple::PixelBufferSource>>     m_pixelBufferSources;
     std::shared_ptr<videocore::AspectTransform>              m_pbAspect;
     std::shared_ptr<videocore::PositionTransform>            m_pbPosition;
     
@@ -868,11 +869,11 @@ namespace videocore { namespace simpleApi {
 
     
 }
-- (void) addPixelBufferSource: (UIImage*) image
+- (size_t) addPixelBufferSource: (UIImage*) image
                      withRect:(CGRect)rect {
     CGImageRef ref = [image CGImage];
     
-    m_pixelBufferSource = std::make_shared<videocore::Apple::PixelBufferSource>(CGImageGetWidth(ref),
+    auto pbs = std::make_shared<videocore::Apple::PixelBufferSource>(CGImageGetWidth(ref),
                                                                                 CGImageGetHeight(ref),
                                                                                 'BGRA');
     
@@ -897,17 +898,33 @@ namespace videocore { namespace simpleApi {
                                                                   rect.size.width, rect.size.height,
                                                                   self.videoSize.width, self.videoSize.height
                                                                             );
-    m_pixelBufferSource->setOutput(m_pbAspect);
+    pbs->setOutput(m_pbAspect);
     m_pbAspect->setOutput(m_pbPosition);
     m_pbPosition->setOutput(m_videoMixer);
-    m_videoMixer->registerSource(m_pixelBufferSource);
-    m_pixelBufferSource->pushPixelBuffer(rawData, width * height * 4);
+    m_videoMixer->registerSource(pbs);
+    pbs->pushPixelBuffer(rawData, width * height * 4);
+    
+    auto const index = m_pixelBufferSources.size();
+    m_pixelBufferSources.insert(std::make_pair(index, pbs));
     
     free(rawData);
     
+    return index;
 }
-- (void) removeLastAddedPixelBufferSource {
-    m_videoMixer->unregisterSource(m_pixelBufferSource);
+
+- (size_t) pixelBufferSourcesSize
+{
+    return m_pixelBufferSources.size();
+}
+- (bool) removePixelBufferSourceAt: (size_t) index
+{
+    auto it = m_pixelBufferSources.find(index);
+    if (it != m_pixelBufferSources.end()) {
+        m_videoMixer->unregisterSource(it->second);
+        m_pixelBufferSources.erase(it);
+        return true;
+    }
+    return false;
 }
 - (NSString *) applicationDocumentsDirectory
 {

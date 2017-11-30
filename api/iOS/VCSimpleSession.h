@@ -151,8 +151,9 @@ typedef NS_ENUM(NSInteger, VCFilter) {
  *  your video)
  */
 
-- (void) addPixelBufferSource: (UIImage*) image
+- (size_t) addPixelBufferSource: (UIImage*) image
                      withRect: (CGRect) rect;
-- (void) removeLastAddedPixelBufferSource;
+- (size_t) pixelBufferSourcesSize;
+- (bool) removePixelBufferSourceAt:  (size_t) index;
 
 @end
