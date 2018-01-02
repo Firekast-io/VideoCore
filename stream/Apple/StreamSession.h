@@ -61,7 +61,7 @@ namespace videocore {
             StreamStatus_T              m_status;
           
             int m_outSocket;
-            
+            std::mutex mutex;
         };
     }
 }

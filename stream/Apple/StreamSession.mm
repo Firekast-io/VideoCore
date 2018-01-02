@@ -110,6 +110,7 @@ namespace videocore {
         void
         StreamSession::disconnect()
         {
+            std::lock_guard<std::mutex> lock(mutex);
             if(m_outputStream) {
                 //if(m_runLoop) {
                 //    [NSOS(m_outputStream) removeFromRunLoop:NSRL(m_runLoop) forMode:NSDefaultRunLoopMode];
@@ -183,6 +184,7 @@ namespace videocore {
         void
         StreamSession::nsStreamCallback(void* stream, unsigned event)
         {
+            std::lock_guard<std::mutex> lock(mutex);
             if(event & NSStreamEventOpenCompleted) {
                 // Only set connected event when input and output stream both connected
                 if(NSIS(m_inputStream).streamStatus >= NSStreamStatusOpen &&
