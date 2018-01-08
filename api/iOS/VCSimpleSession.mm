@@ -508,6 +508,7 @@ namespace videocore { namespace simpleApi {
 
 - (void) dealloc
 {
+    self.delegate = nil; // to avoid EXC_BAD_ACCESS in endRtmpSession > setRtmpSessionState
     [self endRtmpSession];
     m_audioMixer.reset();
     m_videoMixer.reset();
