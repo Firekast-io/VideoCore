@@ -855,13 +855,13 @@ namespace videocore { namespace simpleApi {
 
     }
     {
-        /*m_muxer = std::make_shared<videocore::Apple::MP4Multiplexer>();
+        m_muxer = std::make_shared<videocore::Apple::MP4Multiplexer>();
          videocore::Apple::MP4SessionParameters_t parms(0.) ;
          std::string file = [[[self applicationDocumentsDirectory] stringByAppendingString:@"/output.mp4"] UTF8String];
          parms.setData(file, self.fps, self.videoSize.width, self.videoSize.height);
          m_muxer->setSessionParameters(parms);
          m_aacSplit->setOutput(m_muxer);
-         m_h264Split->setOutput(m_muxer);*/
+         m_h264Split->setOutput(m_muxer);
     }
 
 

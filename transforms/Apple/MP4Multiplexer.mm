@@ -89,6 +89,10 @@ namespace videocore { namespace Apple {
         
     }
     void
+    MP4Multiplexer::setBandwidthCallback(BandwidthCallback callback) {
+      // TODO
+    }
+    void
     MP4Multiplexer::pushBuffer(const uint8_t *const data, size_t size, videocore::IMetadata &metadata)
     {
         switch(metadata.type()) {

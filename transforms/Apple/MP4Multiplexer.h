@@ -48,8 +48,10 @@ namespace videocore { namespace Apple {
         ~MP4Multiplexer();
         
         void setSessionParameters(IMetadata & parameters) ;
+        void setBandwidthCallback(BandwidthCallback callback) ;
         void pushBuffer(const uint8_t* const data, size_t size, IMetadata& metadata);
         void setEpoch(const std::chrono::steady_clock::time_point epoch) { m_epoch = epoch; };
+      
         
     private:
         void pushVideoBuffer(const uint8_t* const data, size_t size, IMetadata& metadata);
