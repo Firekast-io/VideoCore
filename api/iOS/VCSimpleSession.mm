@@ -855,6 +855,10 @@ namespace videocore { namespace simpleApi {
 
     }
     {
+//      NSURL* url = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] objectAtIndex:0];
+//      NSURL* fileURL = [[url URLByAppendingPathComponent:@"output"] URLByAppendingPathExtension:@"mp4"];
+//      NSString* utf8String = [NSString stringWithContentsOfURL:fileURL encoding:NSUTF8StringEncoding error:nil];
+      
         m_muxer = std::make_shared<videocore::Apple::MP4Multiplexer>();
         videocore::Apple::MP4SessionParameters_t parms(0.);
         std::string file = [[[self applicationDocumentsDirectory] stringByAppendingString:@"/output.mp4"] UTF8String];
@@ -931,6 +935,7 @@ namespace videocore { namespace simpleApi {
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSLog(@"applicationDocumentsDirectory: %@", basePath);
     return basePath;
 }
 @end

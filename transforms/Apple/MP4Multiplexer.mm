@@ -69,6 +69,7 @@ namespace videocore { namespace Apple {
         AVAssetWriterInput* audio = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio outputSettings:nil sourceFormatHint:nil];
         
         NSURL* fileUrl = [NSURL fileURLWithPath:[NSString stringWithUTF8String:filename.c_str()]];
+        NSLog(@"MP4 output file: %@", [fileUrl absoluteString]);
         AVAssetWriter* writer = [[AVAssetWriter alloc] initWithURL:fileUrl fileType:AVFileTypeQuickTimeMovie error:nil];
         video.expectsMediaDataInRealTime = YES;
         audio.expectsMediaDataInRealTime = YES;
