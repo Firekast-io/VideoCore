@@ -817,28 +817,24 @@ namespace videocore { namespace simpleApi {
 - (void) addEncodersAndPacketizers
 {
     int ctsOffset = 2000 / self.fps; // 2 * frame duration
-    {
-        // Add encoders
 
-        m_aacEncoder = std::make_shared<videocore::iOS::AACEncode>(self.audioSampleRate, self.audioChannelCount, 96000);
-        if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-            // If >= iOS 8.0 use the VideoToolbox encoder that does not write to disk.
-            m_h264Encoder = std::make_shared<videocore::Apple::H264Encode>(self.videoSize.width,
-                                                                           self.videoSize.height,
-                                                                           self.fps,
-                                                                           self.bitrate,
-                                                                           false,
-                                                                           ctsOffset);
-        } else {
-            m_h264Encoder =std::make_shared<videocore::iOS::H264Encode>(self.videoSize.width,
-                                                                        self.videoSize.height,
-                                                                        self.fps,
-                                                                        self.bitrate);
-        }
-        m_audioMixer->setOutput(m_aacEncoder);
-        m_videoSplit->setOutput(m_h264Encoder);
-
+    // Add encoders
+    m_aacEncoder = std::make_shared<videocore::iOS::AACEncode>(self.audioSampleRate, self.audioChannelCount, 96000);
+    if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
+        // If >= iOS 8.0 use the VideoToolbox encoder that does not write to disk.
+        m_h264Encoder = std::make_shared<videocore::Apple::H264Encode>(self.videoSize.width,
+                                                                       self.videoSize.height,
+                                                                       self.fps,
+                                                                       self.bitrate,
+                                                                       false,
+                                                                       ctsOffset);
+    } else {
+        m_h264Encoder =std::make_shared<videocore::iOS::H264Encode>(self.videoSize.width,
+                                                                    self.videoSize.height,
+                                                                    self.fps,
+                                                                    self.bitrate);
     }
+
     {
         m_aacSplit = std::make_shared<videocore::Split>();
         m_h264Split = std::make_shared<videocore::Split>();
@@ -847,33 +843,44 @@ namespace videocore { namespace simpleApi {
 
     }
     {
-        m_h264Packetizer = std::make_shared<videocore::rtmp::H264Packetizer>(ctsOffset);
-        m_aacPacketizer = std::make_shared<videocore::rtmp::AACPacketizer>(self.audioSampleRate, self.audioChannelCount, ctsOffset);
-
-        m_h264Split->setOutput(m_h264Packetizer);
-        m_aacSplit->setOutput(m_aacPacketizer);
-
-    }
-    {
-//      NSURL* url = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] objectAtIndex:0];
-//      NSURL* fileURL = [[url URLByAppendingPathComponent:@"output"] URLByAppendingPathExtension:@"mp4"];
-//      NSString* utf8String = [NSString stringWithContentsOfURL:fileURL encoding:NSUTF8StringEncoding error:nil];
-      
+        NSString *filePath = [[self applicationDocumentsDirectory] stringByAppendingString:@"/output.mp4"];
+        std::string filePathStr = [filePath UTF8String];
+        
+        NSFileManager* fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:filePath]) {
+            NSError* error;
+            if ([fileManager removeItemAtPath:filePath error:&error] == NO) {
+                NSLog(@"Could not delete old recording:%@", [error localizedDescription]);
+            }
+        }
+        
         m_muxer = std::make_shared<videocore::Apple::MP4Multiplexer>();
         videocore::Apple::MP4SessionParameters_t parms(0.);
-        std::string file = [[[self applicationDocumentsDirectory] stringByAppendingString:@"/output.mp4"] UTF8String];
-        parms.setData(file, self.fps, self.videoSize.width, self.videoSize.height);
+        printf("MP4 save at %s\n", filePathStr.c_str());
+        parms.setData(filePathStr, self.fps, self.videoSize.width, self.videoSize.height);
         m_muxer->setSessionParameters(parms);
+#if 1
         m_aacSplit->setOutput(m_muxer);
+#endif
         m_h264Split->setOutput(m_muxer);
     }
 
-
+    {
+        m_h264Packetizer = std::make_shared<videocore::rtmp::H264Packetizer>(ctsOffset);
+        m_aacPacketizer = std::make_shared<videocore::rtmp::AACPacketizer>(self.audioSampleRate, self.audioChannelCount, ctsOffset);
+        
+        m_h264Split->setOutput(m_h264Packetizer);
+        m_aacSplit->setOutput(m_aacPacketizer);
+    }
+    
     m_h264Packetizer->setOutput(m_outputSession);
     m_aacPacketizer->setOutput(m_outputSession);
-
     
+    //add encoder last to avoid init data propagation before component is connected
+    m_audioMixer->setOutput(m_aacEncoder);
+    m_videoSplit->setOutput(m_h264Encoder);
 }
+
 - (size_t) addPixelBufferSource: (UIImage*) image
                      withRect:(CGRect)rect {
     CGImageRef ref = [image CGImage];

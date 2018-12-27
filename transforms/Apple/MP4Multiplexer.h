@@ -76,6 +76,7 @@ namespace videocore { namespace Apple {
         int m_width;
         int m_height;
         int m_framecount;
+        bool m_firstAudioSample;
     };
     
 }

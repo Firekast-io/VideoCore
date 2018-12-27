@@ -264,6 +264,10 @@ namespace videocore { namespace iOS {
         auto output = m_output.lock();
         if(output && totalBytes) {
             if(!m_sentConfig) {
+                /*Romain: AudioCodecGetPropertyInfo(aacCodec, kAudioCodecPropertyMagicCookie, &cookiestructsize, &writeable);
+                magicCookie = malloc(cookiestructsize);
+                AudioCodecGetProperty(aacCodec, kAudioCodecPropertyMagicCookie, &cookiestructsize, magicCookie);
+                */
                 output->pushBuffer((const uint8_t*)m_asc, sizeof(m_asc), metadata);
                 m_sentConfig = true;
             }
