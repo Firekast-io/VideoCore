@@ -583,9 +583,9 @@ namespace videocore { namespace simpleApi {
 
     _bpsCeiling = _bitrate;
 
-    if ( self.useAdaptiveBitrate ) {
-        _bitrate = 500000;
-    }
+//    if ( self.useAdaptiveBitrate ) {
+//        _bitrate = 500000;
+//    }
 
     m_outputSession->setBandwidthCallback([=](float vector, float predicted, int inst)
                                           {
