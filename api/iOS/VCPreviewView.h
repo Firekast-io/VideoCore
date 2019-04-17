@@ -25,8 +25,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol VCScreenShotDelegate <NSObject>
+@required
+- (void)didGotScreenShot:(CVPixelBufferRef)pixelBuffer;
+@end
+
 @interface VCPreviewView : UIView
 
+@property (nonatomic, assign) id<VCScreenShotDelegate> screenShotDelegate;
+
 - (void) drawFrame: (CVPixelBufferRef) pixelBuffer;
+- (void) takeScreenShot;
 
 @end
