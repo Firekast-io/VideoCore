@@ -567,7 +567,7 @@ namespace videocore { namespace iOS {
             m_mixThreadCond.wait_until(l, m_nextMixTime);
         }
 
-        PERF_GL_sync({});
+//        PERF_GL_sync({});
     }
     
     void
