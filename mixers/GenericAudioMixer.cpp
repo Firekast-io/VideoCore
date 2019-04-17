@@ -69,7 +69,7 @@ static inline int16_t b24_to_b16(void* v) {
 }
 extern std::string g_tmpFolder;
 
-static const int kMixWindowCount = 10;
+static const int kMixWindowCount = 50;
 //static const int kWindowBufferCount = 0;
 
 static const float kE = 2.7182818284590f;
@@ -103,6 +103,7 @@ namespace videocore {
     m_outBitsPerChannel(16),
     m_exiting(false),
     m_mixQueue("com.videocore.audiomix", kJobQueuePriorityHigh),
+    m_paused(false),
     m_outgoingWindow(nullptr),
     m_catchingUp(false),
     m_epoch(std::chrono::steady_clock::now())
@@ -152,17 +153,13 @@ namespace videocore {
     GenericAudioMixer::registerSource(std::shared_ptr<ISource> source,
                                       size_t inBufferSize)
     {
-        auto hash = std::hash<std::shared_ptr< ISource> >()(source);
-        size_t bufferSize = (inBufferSize ? inBufferSize : (m_bytesPerSample * m_outFrequencyInHz * m_bufferDuration * 4)); // 4 frames of buffer space.
-
-        std::unique_ptr<RingBuffer> buffer(new RingBuffer(bufferSize));
-        
+        auto hash = std::hash<std::shared_ptr<ISource> >()(source);
         m_inGain[hash] = 1.f;
     }
     void
     GenericAudioMixer::unregisterSource(std::shared_ptr<ISource> source)
     {
-        auto hash = std::hash<std::shared_ptr< ISource> >()(source);
+        auto hash = std::hash<std::shared_ptr<ISource> >()(source);
 
         m_mixQueue.enqueue([=]() {
             auto iit = m_inGain.find(hash);
@@ -180,10 +177,13 @@ namespace videocore {
         AudioBufferMetadata & inMeta = static_cast<AudioBufferMetadata&>(metadata);
         
         if(inMeta.size() >= 5) {
+            std::unique_lock<std::mutex> l(m_mixMutex);
+
             const auto inSource = inMeta.getData<kAudioMetadataSource>() ;
             const auto cMixTime = std::chrono::steady_clock::now();
             MixWindow* currentWindow = m_currentWindow;
             auto lSource = inSource.lock();
+
             if(lSource) {
                 
                 auto ret = resample(data, size, inMeta);
@@ -193,9 +193,12 @@ namespace videocore {
                     ret->put((uint8_t*)data, size);
                 }
                 
-                
                 m_mixQueue.enqueue([=]() {
-                    auto mixTime = cMixTime;
+                    std::unique_lock<std::mutex> l(m_mixMutex);
+
+                    auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
+
+                    auto mixTime = cMixTime - std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                     
                     const float g = 0.70710678118f; // 1 / sqrt(2)
                     
@@ -228,8 +231,6 @@ namespace videocore {
                     } else {
                         startOffset = 0;
                     }
-                    
-                    auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
 
                     const float mult = m_inGain[hash] * g;
                     
@@ -402,6 +403,8 @@ namespace videocore {
     {
         const auto us = std::chrono::microseconds(static_cast<long long>(m_frameDuration * 1000000.)) ;
 
+        const auto us_buf_duration = std::chrono::microseconds(static_cast<long long>(m_bufferDuration * 1000000.)) ;
+
         const auto start = m_epoch;
         
         m_nextMixTime = start;
@@ -413,7 +416,7 @@ namespace videocore {
 
             auto now = std::chrono::steady_clock::now();
             
-            if( now >= m_currentWindow->next->start ) {
+            if( now >= m_nextMixTime + us_buf_duration ) {
                 
                 auto currentTime = m_nextMixTime;
                 
@@ -426,26 +429,36 @@ namespace videocore {
                 
                 m_nextMixTime = currentWindow->start;
                 
-                AudioBufferMetadata md ( std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - m_epoch).count() );
-                std::shared_ptr<videocore::ISource> blank;
+                if (m_paused.load()) {
+                    m_outgoingWindow = nullptr;
+
+                } else {
+                    AudioBufferMetadata md ( std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - m_epoch).count() );
+                    std::shared_ptr<videocore::ISource> blank;
                     
-                md.setData(m_outFrequencyInHz, m_outBitsPerChannel, m_outChannelCount, 0, 0, (int)currentWindow->size, false, false, blank);
-                auto out = m_output.lock();
-                
-                if(out && m_outgoingWindow) {
-                    out->pushBuffer(m_outgoingWindow->buffer, m_outgoingWindow->size, md);
-                    m_outgoingWindow->clear();
+                    md.setData(m_outFrequencyInHz, m_outBitsPerChannel, m_outChannelCount, 0, 0, (int)currentWindow->size, false, false, blank);
+                    auto out = m_output.lock();
+                    
+                    if(out && m_outgoingWindow) {
+                        out->pushBuffer(m_outgoingWindow->buffer, m_outgoingWindow->size, md);
+                        m_outgoingWindow->clear();
+                    }
+                    m_outgoingWindow = currentWindow;
                 }
-                m_outgoingWindow = currentWindow;
                
                 m_currentWindow = nextWindow;
-                
             }
             if(!m_exiting.load()) {
-                m_mixThreadCond.wait_until(l, m_currentWindow->next->start);
+                m_mixThreadCond.wait_until(l, m_nextMixTime + us_buf_duration);
             }
         }
         DLog("Exiting audio mixer...\n");
+    }
+
+    void
+    GenericAudioMixer::mixPaused(bool paused)
+    {
+        m_paused = paused;
     }
     void
     GenericAudioMixer::deinterleaveDefloat(float *inBuff,
