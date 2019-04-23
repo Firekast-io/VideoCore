@@ -28,6 +28,20 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
+#if TARGET_OS_IPHONE
+#if defined(__IPHONE_8_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
+#define VERSION_OK 1
+#else
+#define VERSION_OK 0
+#endif
+#else
+#define VERSION_OK (1090 <= MAC_OS_X_VERSION_MAX_ALLOWED)
+#endif
+
+#if VERSION_OK==1
+#include <VideoToolbox/VideoToolbox.h>
+#endif
+
 #include <sys/stat.h>
 
 namespace videocore { namespace iOS {
@@ -81,8 +95,11 @@ namespace videocore { namespace iOS {
                 settings = @{AVVideoCodecKey: AVVideoCodecH264,
                              AVVideoCompressionPropertiesKey: @{AVVideoAverageBitRateKey: @(m_bitrate),
                                                                 AVVideoMaxKeyFrameIntervalKey: @(m_fps*2),
-                                                                AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline41/*,
-                                                                AVVideoAllowFrameReorderingKey: @NO*/
+                                                                AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline41,
+                                                                /*AVVideoAllowFrameReorderingKey: @NO,*/
+                                                                (__bridge NSString *)kVTCompressionPropertyKey_PixelTransferProperties: @{
+                                                                        (__bridge NSString *)kVTPixelTransferPropertyKey_ScalingMode: (__bridge NSString *)kVTScalingMode_Letterbox
+                                                                        }
                                                                 },
                              AVVideoWidthKey: @(m_frameW),
                              AVVideoHeightKey: @(m_frameH)
@@ -91,7 +108,10 @@ namespace videocore { namespace iOS {
                 settings = @{AVVideoCodecKey: AVVideoCodecH264,
                              AVVideoCompressionPropertiesKey: @{AVVideoAverageBitRateKey: @(m_bitrate),
                                                                 AVVideoMaxKeyFrameIntervalKey: @(m_fps*2),
-                                                                AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline31
+                                                                AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline31,
+                                                                (__bridge NSString *)kVTCompressionPropertyKey_PixelTransferProperties: @{
+                                                                        (__bridge NSString *)kVTPixelTransferPropertyKey_ScalingMode: (__bridge NSString *)kVTScalingMode_Letterbox
+                                                                        }
                                                                 },
                              AVVideoWidthKey: @(m_frameW),
                              AVVideoHeightKey: @(m_frameH)
@@ -120,6 +140,7 @@ namespace videocore { namespace iOS {
                 [(id)m_assetWriters[wid] startSessionAtSourceTime:time];
             } @catch (NSException* e) {
                 teardownWriter(wid);
+                return false;
             }
         }
         return true;
@@ -304,7 +325,10 @@ namespace videocore { namespace iOS {
             presentationTime.value = m_frameCount;
             presentationTime.flags = kCMTimeFlags_Valid;
             
-            if(!m_assetWriters[m_currentWriter] || !m_pixelBuffers[m_currentWriter] || [(id)m_assetWriters[m_currentWriter] status] != 1) {
+            std::unique_lock<std::mutex> l(m_encodeMutex);
+
+            if(!m_assetWriters[m_currentWriter] || !m_pixelBuffers[m_currentWriter] || [(id)m_assetWriters[m_currentWriter] status] != AVAssetWriterStatusWriting) {
+                m_queue.enqueue_sync([]{});
                 swapWriters(true);
                 return ;
             }
@@ -317,8 +341,16 @@ namespace videocore { namespace iOS {
             }
             
             CVPixelBufferLockBaseAddress(pb, kCVPixelBufferLock_ReadOnly);
-            [(id)m_pixelBuffers[m_currentWriter] appendPixelBuffer:pb withPresentationTime:presentationTime];
-            CVPixelBufferUnlockBaseAddress(pb, kCVPixelBufferLock_ReadOnly);
+            @try {
+                [adaptor appendPixelBuffer:pb withPresentationTime:presentationTime];
+            } @catch (NSException* e) {
+                NSLog(@"%@", e);
+                m_queue.enqueue_sync([]{});
+                swapWriters(true);
+                return;
+            } @finally {
+                CVPixelBufferUnlockBaseAddress(pb, kCVPixelBufferLock_ReadOnly);
+            }
             
             
             // Open the file the h.264 data is being written to.
@@ -382,14 +414,19 @@ namespace videocore { namespace iOS {
         }
         
     }
-    
     void
     H264Encode::setBitrate(int bitrate)
     {
-        m_bitrate = bitrate;
-        teardownWriter(!m_currentWriter);
-        setupWriter(!m_currentWriter);
-        swapWriters(true);
+        if(m_bitrate != bitrate) {
+            std::unique_lock<std::mutex> l(m_encodeMutex);
+            m_bitrate = bitrate;
+
+            m_queue.enqueue_sync([=] {
+                this->teardownWriter(!m_currentWriter);
+                this->setupWriter(!m_currentWriter);
+            });
+            swapWriters(true);
+        }
     }
 }
 }

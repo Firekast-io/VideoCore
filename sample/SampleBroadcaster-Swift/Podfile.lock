@@ -24,6 +24,12 @@ PODS:
 DEPENDENCIES:
   - VideoCore (from `../..`)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - boost
+    - glm
+    - UriParser-cpp
+
 EXTERNAL SOURCES:
   VideoCore:
     :path: "../.."
@@ -32,6 +38,8 @@ SPEC CHECKSUMS:
   boost: 6c5c8d8daef26ac83c1e1c00ad14de62b80161d7
   glm: e22c8d9df10404059b19c2952f9fa44d9a9f3056
   UriParser-cpp: cbbe00080ee432ec4833dca863a7fc83adc9b01a
-  VideoCore: 9b783edd81b91a80c5599bae1f98e9c93ee029e7
+  VideoCore: 9f9a95324d76cc123c19ec25c71fe06001d9c1d8
 
-COCOAPODS: 0.37.2
+PODFILE CHECKSUM: d828e2d52300092eb2dcb38fc3dce7ad0e71816c
+
+COCOAPODS: 1.6.1

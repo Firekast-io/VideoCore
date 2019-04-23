@@ -89,8 +89,10 @@ namespace videocore
         }
         m_playPath = pp.str();
         m_playPath.pop_back();
-        
+      
         connectServer();
+      
+        m_isNetworkJobQueueFull = false;
     }
     RTMPSession::~RTMPSession()
     {
@@ -218,7 +220,19 @@ namespace videocore
     void
     RTMPSession::write(uint8_t* data, size_t size, std::chrono::steady_clock::time_point packetTime, bool isKeyframe)
     {
-        if(size > 0) {
+        if (size > 0) {
+//            printf("m_networkQueue Count:%d\n",m_networkQueue.size());
+            
+            if (m_networkQueue.size() >= 200) {
+                m_isNetworkJobQueueFull = true;
+            }
+            
+            if (m_networkQueue.size() <= 70 && isKeyframe) {
+                m_isNetworkJobQueueFull = false;
+            }
+            
+            if (m_isNetworkJobQueueFull) return;
+            
             std::shared_ptr<Buffer> buf = std::make_shared<Buffer>(size);
             buf->put(data, size);
             
@@ -231,6 +245,7 @@ namespace videocore
             if(m_bufferSize > kMaxSendbufferSize && isKeyframe) {
                 m_clearing = true;
             }
+
             m_networkQueue.enqueue([=]() {
                 size_t tosend = size;
                 uint8_t* p ;
@@ -256,7 +271,6 @@ namespace videocore
                 this->increaseBuffer(-int64_t(size));
             });
         }
-        
     }
     void
     RTMPSession::dataReceived()

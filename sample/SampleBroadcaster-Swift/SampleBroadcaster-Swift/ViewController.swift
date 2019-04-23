@@ -64,24 +64,24 @@ class ViewController: UIViewController, VCSessionDelegate
 
     @IBAction func btnConnectTouch(sender: AnyObject) {
         switch session.rtmpSessionState {
-        case .None, .PreviewStarted, .Ended, .Error:
-            session.startRtmpSessionWithURL("rtmp://192.168.1.151/live", andStreamKey: "myStream")
+        case .none, .previewStarted, .ended, .error:
+          session.startRtmpSession(withURL: "rtmp://192.168.1.151/live", andStreamKey: "myStream")
         default:
             session.endRtmpSession()
             break
         }
     }
-    
-    func connectionStatusChanged(sessionState: VCSessionState) {
+  
+    func connectionStatusChanged(_ sessionState: VCSessionState) {
         switch session.rtmpSessionState {
-        case .Starting:
-            btnConnect.setTitle("Connecting", forState: .Normal)
+        case .starting:
+            btnConnect.setTitle("Connecting", for: .normal)
             
-        case .Started:
-            btnConnect.setTitle("Disconnect", forState: .Normal)
+        case .started:
+            btnConnect.setTitle("Disconnect", for: .normal)
             
         default:
-            btnConnect.setTitle("Connect", forState: .Normal)
+            btnConnect.setTitle("Connect", for: .normal)
         }
     }
     
@@ -89,23 +89,23 @@ class ViewController: UIViewController, VCSessionDelegate
     @IBAction func btnFilterTouch(sender: AnyObject) {
         switch self.session.filter {
             
-        case .Normal:
-            self.session.filter = .Gray
+        case .normal:
+            self.session.filter = .gray
         
-        case .Gray:
-            self.session.filter = .InvertColors
+        case .gray:
+            self.session.filter = .invertColors
         
-        case .InvertColors:
-            self.session.filter = .Sepia
+        case .invertColors:
+            self.session.filter = .sepia
         
-        case .Sepia:
-            self.session.filter = .Fisheye
+        case .sepia:
+            self.session.filter = .fisheye
         
-        case .Fisheye:
-            self.session.filter = .Glow
+        case .fisheye:
+            self.session.filter = .glow
         
-        case .Glow:
-            self.session.filter = .Normal
+        case .glow:
+            self.session.filter = .normal
         
         default: // Future proofing
             break

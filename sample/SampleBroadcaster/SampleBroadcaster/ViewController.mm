@@ -24,11 +24,9 @@
  */
 
 #import "ViewController.h"
-#import "VCSimpleSession.h"
+#import <videocore/api/iOS/VCSimpleSession.h>
 
-@interface ViewController () <VCSessionDelegate> {
-
-}
+@interface ViewController () <VCSessionDelegate, RPBroadcastActivityViewControllerDelegate>
 @property (nonatomic, retain) VCSimpleSession* session;
 @end
 
@@ -39,20 +37,14 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    CGRect rect = [[UIScreen mainScreen] bounds];
-    NSLog(@"Screen rect:%@", NSStringFromCGRect(rect));
-    [[NSUserDefaults standardUserDefaults] setValue:@"name_preference" forKey:@"test"];
-
-
-    _session = [[VCSimpleSession alloc] initWithVideoSize:rect.size frameRate:30 bitrate:1000000 useInterfaceOrientation:YES];
-//    _session.orientationLocked = YES;
+    _session = [[VCSimpleSession alloc] initWithVideoSize:CGSizeMake(368, 640) frameRate:20 bitrate:650000 useInterfaceOrientation:NO];
+    
     [self.previewView addSubview:_session.previewView];
     _session.previewView.frame = self.previewView.bounds;
     _session.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning
-
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -67,19 +59,33 @@
 }
 
 - (IBAction)btnConnectTouch:(id)sender {
-    switch(_session.rtmpSessionState) {
-        case VCSessionStateNone:
-        case VCSessionStatePreviewStarted:
-        case VCSessionStateEnded:
-        case VCSessionStateError:
-            [_session startRtmpSessionWithURL:@"rtmp://192.168.50.19/myapp" andStreamKey:@"iosstream?abc=xxx"];
-            break;
-        default:
-            [_session endRtmpSession];
-            break;
-    }
+    
+//    switch(_session.rtmpSessionState) {
+//        case VCSessionStateNone:
+//        case VCSessionStatePreviewStarted:
+//        case VCSessionStateEnded:
+//        case VCSessionStateError:
+//            [_session startRtmpSessionWithURL:@"rtmp://192.168.1.1" andStreamKey:@"test"];
+//            break;
+//        default:
+//            [_session endRtmpSession];
+//            break;
+//    }
+  
+  [RPBroadcastActivityViewController loadBroadcastActivityViewControllerWithHandler:^(RPBroadcastActivityViewController * _Nullable broadcastActivityViewController, NSError * _Nullable error) {
+    [broadcastActivityViewController setDelegate:self];
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:broadcastActivityViewController animated:YES completion:nil];
+  }];
+  
 }
 
+- (void)broadcastActivityViewController:(RPBroadcastActivityViewController *)broadcastActivityViewController didFinishWithBroadcastController:(RPBroadcastController *)broadcastController error:(NSError *)error {
+  NSLog(@"Delegate %@", error);
+  [broadcastActivityViewController dismissViewControllerAnimated:YES completion:nil];
+  [broadcastController startBroadcastWithHandler:^(NSError * _Nullable error) {
+    NSLog(@"Delegate - startbroadcast handler, with error: %@", error);
+  }];
+}
 
 //Switch with the availables filters
 - (IBAction)btnFilterTouch:(id)sender {
